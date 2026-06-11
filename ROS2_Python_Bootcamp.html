@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ROS 2 Python Bootcamp -- Om Gajjar </title>
+<style>
+  :root{--bg:#0f172a;--card:#1e293b;--border:#334155;--blue:#3b82f6;--teal:#0d9488;--green:#16a34a;--amber:#d97706;--red:#dc2626;--purple:#7c3aed;--white:#f1f5f9;--muted:#94a3b8;--code:#0a1628;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--white);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.7;}
+  .wrap{max-width:960px;margin:0 auto;padding:1.5rem 1rem;}
+  .header{background:linear-gradient(135deg,#1e3a8a,#15803d);border-radius:14px;padding:2rem;margin-bottom:1.5rem;}
+  .header h1{font-size:1.7rem;font-weight:800;margin-bottom:0.3rem;}
+  .header p{color:rgba(255,255,255,0.8);font-size:0.9rem;}
+  .progress-bar{background:#1e293b;border-radius:8px;height:8px;margin:1rem 0;}
+  .progress-fill{background:linear-gradient(90deg,var(--green),var(--teal));height:8px;border-radius:8px;transition:width 0.4s;}
+
+  /* Exercise card */
+  .ex{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:1.5rem;overflow:hidden;}
+  .ex-header{padding:1rem 1.2rem;display:flex;align-items:center;gap:0.8rem;cursor:pointer;user-select:none;}
+  .ex-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;flex-shrink:0;}
+  .ex-title{font-weight:700;font-size:0.97rem;flex:1;}
+  .ex-badge{font-size:0.7rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:100px;text-transform:uppercase;letter-spacing:0.05em;}
+  .badge-warm{background:#1c3a1c;color:#4ade80;}
+  .badge-mid{background:#1c2a3a;color:#60a5fa;}
+  .badge-hard{background:#2a1c3a;color:#c084fc;}
+  .badge-proj{background:#2a1c00;color:#fbbf24;}
+  .ex-body{padding:0 1.2rem 1.2rem;display:none;}
+  .ex-body.open{display:block;}
+
+  /* Sections inside exercise */
+  .section-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin:1rem 0 0.4rem;}
+  .section-label.goal{color:var(--amber);}
+  .section-label.task{color:var(--blue);}
+  .section-label.hint{color:var(--teal);}
+  .section-label.sol{color:var(--green);}
+  .section-label.think{color:var(--purple);}
+
+  pre{background:var(--code);border:1px solid var(--border);border-radius:8px;padding:1rem 1.2rem;overflow-x:auto;font-size:0.79rem;line-height:1.65;margin:0.5rem 0;white-space:pre;}
+  code{font-family:'Courier New',monospace;}
+  .kw{color:#c084fc;} .fn{color:#60a5fa;} .st{color:#86efac;} .cm{color:#475569;} .nu{color:#fbbf24;} .dc{color:#f472b6;}
+
+  .reveal-btn{background:var(--green);color:#fff;border:none;padding:0.5rem 1.2rem;border-radius:8px;cursor:pointer;font-size:0.82rem;font-weight:700;margin:0.6rem 0;}
+  .reveal-btn:hover{background:#15803d;}
+  .hidden-sol{display:none;}
+  .hidden-sol.shown{display:block;}
+
+  .alert{border-radius:8px;padding:0.7rem 1rem;margin:0.6rem 0;font-size:0.85rem;}
+  .alert-tip{background:#0c2a1a;border-left:4px solid var(--green);}
+  .alert-warn{background:#2a1c00;border-left:4px solid var(--amber);}
+  .alert-think{background:#1c1040;border-left:4px solid var(--purple);}
+
+  table{width:100%;border-collapse:collapse;font-size:0.83rem;margin:0.6rem 0;}
+  th{background:#1e3a8a;color:#fff;padding:0.5rem 0.8rem;text-align:left;font-weight:600;font-size:0.78rem;}
+  td{padding:0.45rem 0.8rem;border-bottom:1px solid var(--border);}
+  tr:nth-child(even) td{background:#131e2e;}
+
+  .inline{background:#1e293b;border-radius:4px;padding:0.1rem 0.4rem;font-family:'Courier New',monospace;font-size:0.8rem;color:#7dd3fc;}
+  .done-btn{background:var(--border);color:var(--muted);border:none;padding:0.4rem 1rem;border-radius:6px;cursor:pointer;font-size:0.78rem;font-weight:600;float:right;}
+  .done-btn.done{background:#15803d;color:#fff;}
+
+  .nav-dots{display:flex;gap:0.4rem;justify-content:center;margin:1rem 0;}
+  .dot{width:10px;height:10px;border-radius:50%;background:var(--border);cursor:pointer;}
+  .dot.done{background:var(--green);}
+  .dot.active{background:var(--blue);}
+
+  .system-box{background:#0a1628;border:2px solid var(--teal);border-radius:10px;padding:1rem;margin:0.6rem 0;font-size:0.82rem;}
+  .system-box .sys-title{color:var(--teal);font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="header">
+  <h1>🐍 ROS 2 Python Bootcamp</h1>
+  <p>Build your own systems from scratch. Every exercise is a real problem — try it first, then reveal the solution. | Om Gajjar - ROS2 Developer - My Equation · June 2026</p>
+  <div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+  <div style="font-size:0.78rem;color:rgba(255,255,255,0.6)" id="prog-text">0 / 12 completed</div>
+</div>
+
+<!-- ══════════════════════════════════ HOW TO USE -->
+<div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:0.85rem;">
+  <strong style="color:var(--amber)">How to use this:</strong>
+  Read the goal → Write the code yourself in VS Code or your terminal → Come back and click "Show Solution" to compare.
+  Don't just read the solution. <strong>Type the code. Run it. Break it. Fix it.</strong>
+</div>
+
+<!-- ══════════════════════════════════ EX 1 -->
+<div class="ex" id="ex1">
+  <div class="ex-header" onclick="toggle('ex1')">
+    <div class="ex-num" style="background:#1c3a1c;color:#4ade80;">1</div>
+    <div class="ex-title">Node that counts how many times it's been alive</div>
+    <span class="ex-badge badge-warm">Warm-up</span>
+    <button class="done-btn" id="done1" onclick="markDone(event,'done1',1)">Mark done</button>
+  </div>
+  <div class="ex-body" id="body-ex1">
+    <div class="section-label goal">🎯 Goal</div>
+    <p>Create a node called <span class="inline">uptime_counter</span>. Every 2 seconds it logs how many seconds it has been running. Format: <span class="inline">[INFO] Running for 6 seconds</span></p>
+
+    <div class="section-label task">📝 Your task</div>
+    <ul style="padding-left:1.2rem;font-size:0.87rem;margin:0.4rem 0;">
+      <li>Create a new Python file</li>
+      <li>Make a Node class</li>
+      <li>Use a timer to count elapsed seconds</li>
+      <li>Log the count each tick</li>
+    </ul>
+
+    <div class="alert alert-think">
+      <strong>Think before coding:</strong> What variable do you need? How do you calculate elapsed time from ticks? What timer interval makes the count work correctly?
+    </div>
+
+    <button class="reveal-btn" onclick="reveal('sol1')">Show Solution</button>
+    <div class="hidden-sol" id="sol1">
+<pre><span class="kw">import</span> rclpy
+<span class="kw">from</span> rclpy.node <span class="kw">import</span> Node
+
+<span class="kw">class</span> <span class="fn">UptimeCounter</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'uptime_counter'</span>)
+        self.seconds = <span class="nu">0</span>
+        <span class="cm"># Timer fires every 1 second — each tick = 1 second elapsed</span>
+        self.timer = self.create_timer(<span class="nu">1.0</span>, self.tick)
+
+    <span class="kw">def</span> <span class="fn">tick</span>(self):
+        self.seconds += <span class="nu">1</span>
+        <span class="kw">if</span> self.seconds % <span class="nu">2</span> == <span class="nu">0</span>:  <span class="cm"># only log every 2 seconds</span>
+            self.get_logger().info(<span class="st">f'Running for {self.seconds} seconds'</span>)
+
+<span class="kw">def</span> <span class="fn">main</span>(args=<span class="kw">None</span>):
+    rclpy.init(args=args)
+    node = UptimeCounter()
+    rclpy.spin(node)
+    node.destroy_node()
+    rclpy.shutdown()
+
+<span class="kw">if</span> __name__ == <span class="st">'__main__'</span>:
+    main()</pre>
+      <div class="alert alert-tip"><strong>Run it:</strong> <span class="inline">python3 uptime_counter.py</span> — You should see the count every 2 seconds.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ EX 2 -->
+<div class="ex" id="ex2">
+  <div class="ex-header" onclick="toggle('ex2')">
+    <div class="ex-num" style="background:#1c2a3a;color:#60a5fa;">2</div>
+    <div class="ex-title">Temperature sensor simulator — publish fake sensor data</div>
+    <span class="ex-badge badge-mid">Core</span>
+    <button class="done-btn" id="done2" onclick="markDone(event,'done2',2)">Mark done</button>
+  </div>
+  <div class="ex-body" id="body-ex2">
+    <div class="section-label goal">🎯 Goal</div>
+    <p>Simulate a temperature sensor. Publish a <span class="inline">Float64</span> value to <span class="inline">/temperature</span> every second. Start at 25.0°C and add a small random fluctuation (±0.5°C) each tick. Log the published value.</p>
+
+    <div class="alert alert-think">
+      <strong>Think:</strong> Which message type do you import? What does random fluctuation mean in code? How do you clamp a value between a range?
+    </div>
+
+    <div class="section-label hint">💡 Hints</div>
+    <ul style="padding-left:1.2rem;font-size:0.87rem;">
+      <li>Import: <span class="inline">from std_msgs.msg import Float64</span></li>
+      <li>Import: <span class="inline">import random</span></li>
+      <li><span class="inline">random.uniform(-0.5, 0.5)</span> gives a random float between -0.5 and 0.5</li>
+    </ul>
+
+    <button class="reveal-btn" onclick="reveal('sol2')">Show Solution</button>
+    <div class="hidden-sol" id="sol2">
+<pre><span class="kw">import</span> rclpy, random
+<span class="kw">from</span> rclpy.node <span class="kw">import</span> Node
+<span class="kw">from</span> std_msgs.msg <span class="kw">import</span> Float64
+
+<span class="kw">class</span> <span class="fn">TempSensor</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'temp_sensor'</span>)
+        self.pub = self.create_publisher(Float64, <span class="st">'/temperature'</span>, <span class="nu">10</span>)
+        self.temp = <span class="nu">25.0</span>
+        self.timer = self.create_timer(<span class="nu">1.0</span>, self.publish_temp)
+
+    <span class="kw">def</span> <span class="fn">publish_temp</span>(self):
+        self.temp += random.uniform(<span class="nu">-0.5</span>, <span class="nu">0.5</span>)
+        self.temp = max(<span class="nu">20.0</span>, min(<span class="nu">30.0</span>, self.temp))  <span class="cm"># clamp 20-30°C</span>
+        msg = Float64()
+        msg.data = self.temp
+        self.pub.publish(msg)
+        self.get_logger().info(<span class="st">f'Temperature: {self.temp:.2f}°C'</span>)
+
+<span class="kw">def</span> <span class="fn">main</span>(args=<span class="kw">None</span>):
+    rclpy.init(args=args)
+    rclpy.spin(TempSensor())
+    rclpy.shutdown()
+
+<span class="kw">if</span> __name__ == <span class="st">'__main__'</span>:
+    main()</pre>
+      <div class="alert alert-tip"><strong>Now test it:</strong> Run the node, then in another terminal: <span class="inline">ros2 topic echo /temperature</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ EX 3 -->
+<div class="ex" id="ex3">
+  <div class="ex-header" onclick="toggle('ex3')">
+    <div class="ex-num" style="background:#1c2a3a;color:#60a5fa;">3</div>
+    <div class="ex-title">Temperature monitor — subscribe and classify readings</div>
+    <span class="ex-badge badge-mid">Core</span>
+    <button class="done-btn" id="done3" onclick="markDone(event,'done3',3)">Mark done</button>
+  </div>
+  <div class="ex-body" id="body-ex3">
+    <div class="section-label goal">🎯 Goal</div>
+    <p>Subscribe to <span class="inline">/temperature</span> (from Ex 2). For each reading, classify and log it:</p>
+    <ul style="padding-left:1.2rem;font-size:0.87rem;margin:0.4rem 0;">
+      <li>Below 22°C → <span style="color:#60a5fa">COLD</span></li>
+      <li>22–27°C → <span style="color:#4ade80">NORMAL</span></li>
+      <li>Above 27°C → <span style="color:#f87171">HOT — check cooling system</span></li>
+    </ul>
+    <p>Also track and log the <strong>running average</strong> temperature.</p>
+
+    <div class="alert alert-think">
+      <strong>Think:</strong> How do you calculate a running average without storing all values? (hint: keep a count and a total)
+    </div>
+
+    <button class="reveal-btn" onclick="reveal('sol3')">Show Solution</button>
+    <div class="hidden-sol" id="sol3">
+<pre><span class="kw">import</span> rclpy
+<span class="kw">from</span> rclpy.node <span class="kw">import</span> Node
+<span class="kw">from</span> std_msgs.msg <span class="kw">import</span> Float64
+
+<span class="kw">class</span> <span class="fn">TempMonitor</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'temp_monitor'</span>)
+        self.sub = self.create_subscription(
+            Float64, <span class="st">'/temperature'</span>, self.on_temp, <span class="nu">10</span>)
+        self.total = <span class="nu">0.0</span>
+        self.count = <span class="nu">0</span>
+
+    <span class="kw">def</span> <span class="fn">on_temp</span>(self, msg: Float64):
+        t = msg.data
+        self.total += t
+        self.count += <span class="nu">1</span>
+        avg = self.total / self.count
+
+        <span class="kw">if</span> t < <span class="nu">22.0</span>:
+            status = <span class="st">'COLD'</span>
+        <span class="kw">elif</span> t > <span class="nu">27.0</span>:
+            status = <span class="st">'HOT — check cooling system'</span>
+        <span class="kw">else</span>:
+            status = <span class="st">'NORMAL'</span>
+
+        self.get_logger().info(
+            <span class="st">f'Temp: {t:.2f}°C | Status: {status} | Avg: {avg:.2f}°C'</span>)
+
+<span class="kw">def</span> <span class="fn">main</span>(args=<span class="kw">None</span>):
+    rclpy.init(args=args)
+    rclpy.spin(TempMonitor())
+    rclpy.shutdown()
+
+<span class="kw">if</span> __name__ == <span class="st">'__main__'</span>:
+    main()</pre>
+      <div class="alert alert-tip"><strong>Run both at once:</strong> Terminal 1 = sensor node, Terminal 2 = monitor node. Watch them talk.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ EX 4 -->
+<div class="ex" id="ex4">
+  <div class="ex-header" onclick="toggle('ex4')">
+    <div class="ex-num" style="background:#1c2a3a;color:#60a5fa;">4</div>
+    <div class="ex-title">Reset service — add a /reset_avg service to the monitor</div>
+    <span class="ex-badge badge-mid">Core</span>
+    <button class="done-btn" id="done4" onclick="markDone(event,'done4',4)">Mark done</button>
+  </div>
+  <div class="ex-body" id="body-ex4">
+    <div class="section-label goal">🎯 Goal</div>
+    <p>Extend the TempMonitor from Ex 3. Add a service <span class="inline">/reset_avg</span> using <span class="inline">std_srvs/Empty</span> that resets the total and count back to zero. Log "Average reset!" when called.</p>
+
+    <div class="section-label hint">💡 Key import</div>
+    <pre><span class="kw">from</span> std_srvs.srv <span class="kw">import</span> Empty</pre>
+    <p style="font-size:0.85rem;">Empty service has no request or response fields — you just call it and the callback fires.</p>
+
+    <div class="alert alert-think">
+      <strong>Think:</strong> The service callback signature for Empty is: <span class="inline">def handle(self, request, response)</span> — same as always, just the request and response have no fields. You still must return response.
+    </div>
+
+    <button class="reveal-btn" onclick="reveal('sol4')">Show Solution</button>
+    <div class="hidden-sol" id="sol4">
+<pre><span class="kw">import</span> rclpy
+<span class="kw">from</span> rclpy.node <span class="kw">import</span> Node
+<span class="kw">from</span> std_msgs.msg <span class="kw">import</span> Float64
+<span class="kw">from</span> std_srvs.srv <span class="kw">import</span> Empty
+
+<span class="kw">class</span> <span class="fn">TempMonitor</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'temp_monitor'</span>)
+        self.sub = self.create_subscription(
+            Float64, <span class="st">'/temperature'</span>, self.on_temp, <span class="nu">10</span>)
+        self.srv = self.create_service(
+            Empty, <span class="st">'/reset_avg'</span>, self.handle_reset)
+        self.total = <span class="nu">0.0</span>
+        self.count = <span class="nu">0</span>
+
+    <span class="kw">def</span> <span class="fn">on_temp</span>(self, msg):
+        t = msg.data
+        self.total += t
+        self.count += <span class="nu">1</span>
+        avg = self.total / self.count
+        self.get_logger().info(<span class="st">f'Temp: {t:.2f}°C | Avg: {avg:.2f}°C'</span>)
+
+    <span class="kw">def</span> <span class="fn">handle_reset</span>(self, request, response):
+        self.total = <span class="nu">0.0</span>
+        self.count = <span class="nu">0</span>
+        self.get_logger().info(<span class="st">'Average reset!'</span>)
+        <span class="kw">return</span> response  <span class="cm"># always return response!</span>
+
+<span class="kw">def</span> <span class="fn">main</span>(args=<span class="kw">None</span>):
+    rclpy.init(args=args)
+    rclpy.spin(TempMonitor())
+    rclpy.shutdown()
+
+<span class="kw">if</span> __name__ == <span class="st">'__main__'</span>:
+    main()</pre>
+      <div class="alert alert-tip"><strong>Test the service:</strong> <span class="inline">ros2 service call /reset_avg std_srvs/srv/Empty {}</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ EX 5 -->
+<div class="ex" id="ex5">
+  <div class="ex-header" onclick="toggle('ex5')">
+    <div class="ex-num" style="background:#1c2a3a;color:#60a5fa;">5</div>
+    <div class="ex-title">Parameters — make the temperature thresholds configurable</div>
+    <span class="ex-badge badge-mid">Core</span>
+    <button class="done-btn" id="done5" onclick="markDone(event,'done5',5)">Mark done</button>
+  </div>
+  <div class="ex-body" id="body-ex5">
+    <div class="section-label goal">🎯 Goal</div>
+    <p>Extend TempMonitor so the HOT and COLD thresholds are ROS 2 parameters, not hardcoded values. Default: cold_threshold=22.0, hot_threshold=27.0. Change them at runtime without restarting the node.</p>
+
+    <div class="alert alert-think">
+      <strong>Think:</strong> Parameters should be declared in __init__. But when should you READ them — at startup or on every callback? What's better for runtime changes?
+    </div>
+
+    <button class="reveal-btn" onclick="reveal('sol5')">Show Solution</button>
+    <div class="hidden-sol" id="sol5">
+<pre><span class="kw">import</span> rclpy
+<span class="kw">from</span> rclpy.node <span class="kw">import</span> Node
+<span class="kw">from</span> std_msgs.msg <span class="kw">import</span> Float64
+
+<span class="kw">class</span> <span class="fn">TempMonitor</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'temp_monitor'</span>)
+        <span class="cm"># Declare with defaults</span>
+        self.declare_parameter(<span class="st">'cold_threshold'</span>, <span class="nu">22.0</span>)
+        self.declare_parameter(<span class="st">'hot_threshold'</span>, <span class="nu">27.0</span>)
+        self.sub = self.create_subscription(
+            Float64, <span class="st">'/temperature'</span>, self.on_temp, <span class="nu">10</span>)
+
+    <span class="kw">def</span> <span class="fn">on_temp</span>(self, msg):
+        t = msg.data
+        <span class="cm"># Read params on every callback — picks up runtime changes</span>
+        cold = self.get_parameter(<span class="st">'cold_threshold'</span>).value
+        hot  = self.get_parameter(<span class="st">'hot_threshold'</span>).value
+
+        <span class="kw">if</span> t < cold:
+            status = <span class="st">f'COLD (threshold {cold}°C)'</span>
+        <span class="kw">elif</span> t > hot:
+            status = <span class="st">f'HOT (threshold {hot}°C)'</span>
+        <span class="kw">else</span>:
+            status = <span class="st">'NORMAL'</span>
+
+        self.get_logger().info(<span class="st">f'{t:.2f}°C — {status}'</span>)
+
+<span class="kw">def</span> <span class="fn">main</span>(args=<span class="kw">None</span>):
+    rclpy.init(args=args)
+    rclpy.spin(TempMonitor())
+    rclpy.shutdown()</pre>
+      <div class="alert alert-tip"><strong>Change at runtime:</strong> <span class="inline">ros2 param set /temp_monitor hot_threshold 24.0</span> — now readings above 24° trigger HOT.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ EX 6 -->
+<div class="ex" id="ex6">
+  <div class="ex-header" onclick="toggle('ex6')">
+    <div class="ex-num" style="background:#2a1c3a;color:#c084fc;">6</div>
+    <div class="ex-title">Motor speed controller — pub + sub + logic in one node</div>
+    <span class="ex-badge badge-hard">Challenge</span>
+    <button class="done-btn" id="done6" onclick="markDone(event,'done6',6)">Mark done</button>
+  </div>
+  <div class="ex-body" id="body-ex6">
+    <div class="section-label goal">🎯 Goal</div>
+    <p>Build a node that simulates a motor speed controller:</p>
+    <ul style="padding-left:1.2rem;font-size:0.87rem;margin:0.4rem 0;">
+      <li>Subscribe to <span class="inline">/target_speed</span> (Float64) — the desired speed</li>
+      <li>Publish to <span class="inline">/actual_speed</span> (Float64) every 0.5s</li>
+      <li>The actual speed moves toward the target by <strong>10% per tick</strong> (simulates motor inertia)</li>
+      <li>Log both target and actual speed each tick</li>
+    </ul>
+
+    <div class="alert alert-think">
+      <strong>Think — this is real control logic:</strong> If actual=0 and target=100, after one tick actual=10. After two ticks actual=19 (10% of 90 remaining). This is exponential approach — you've implemented it before in your turtle chaser (proportional control).
+    </div>
+
+    <div class="section-label hint">💡 Formula</div>
+    <pre>actual = actual + (target - actual) * 0.1</pre>
+
+    <button class="reveal-btn" onclick="reveal('sol6')">Show Solution</button>
+    <div class="hidden-sol" id="sol6">
+<pre><span class="kw">import</span> rclpy
+<span class="kw">from</span> rclpy.node <span class="kw">import</span> Node
+<span class="kw">from</span> std_msgs.msg <span class="kw">import</span> Float64
+
+<span class="kw">class</span> <span class="fn">MotorController</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'motor_controller'</span>)
+        self.actual_speed = <span class="nu">0.0</span>
+        self.target_speed = <span class="nu">0.0</span>
+
+        self.sub = self.create_subscription(
+            Float64, <span class="st">'/target_speed'</span>, self.on_target, <span class="nu">10</span>)
+        self.pub = self.create_publisher(
+            Float64, <span class="st">'/actual_speed'</span>, <span class="nu">10</span>)
+        self.timer = self.create_timer(<span class="nu">0.5</span>, self.update)
+
+    <span class="kw">def</span> <span class="fn">on_target</span>(self, msg):
+        self.target_speed = msg.data
+
+    <span class="kw">def</span> <span class="fn">update</span>(self):
+        <span class="cm"># Proportional approach — same math as your turtle chaser!</span>
+        self.actual_speed += (self.target_speed - self.actual_speed) * <span class="nu">0.1</span>
+        msg = Float64()
+        msg.data = self.actual_speed
+        self.pub.publish(msg)
+        self.get_logger().info(
+            <span class="st">f'Target: {self.target_speed:.1f} | Actual: {self.actual_speed:.2f}'</span>)
+
+<span class="kw">def</span> <span class="fn">main</span>(args=<span class="kw">None</span>):
+    rclpy.init(args=args)
+    rclpy.spin(MotorController())
+    rclpy.shutdown()</pre>
+      <div class="alert alert-tip"><strong>Send a target:</strong> <span class="inline">ros2 topic pub /target_speed std_msgs/Float64 "{data: 100.0}" --once</span> — watch actual_speed climb toward 100.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ EX 7 -->
+<div class="ex" id="ex7">
+  <div class="ex-header" onclick="toggle('ex7')">
+    <div class="ex-num" style="background:#2a1c3a;color:#c084fc;">7</div>
+    <div class="ex-title">LIDAR obstacle detector — process real /scan data</div>
+    <span class="ex-badge badge-hard">Challenge</span>
+    <button class="done-btn" id="done7" onclick="markDone(event,'done7',7)">Mark done</button>
+  </div>
+  <div class="ex-body" id="body-ex7">
+    <div class="section-label goal">🎯 Goal</div>
+    <p>Subscribe to <span class="inline">/scan</span> (LaserScan). For each scan:</p>
+    <ul style="padding-left:1.2rem;font-size:0.87rem;margin:0.4rem 0;">
+      <li>Filter out invalid readings (inf, nan, out of range)</li>
+      <li>Find the minimum distance across all valid readings</li>
+      <li>Find which direction it's in (convert index to angle in degrees)</li>
+      <li>If min distance &lt; 0.5m → log <span style="color:#f87171">OBSTACLE CLOSE at X.XXm, direction: YY°</span></li>
+      <li>Otherwise → log <span style="color:#4ade80">CLEAR — closest: X.XXm</span></li>
+      <li>Also publish a <span class="inline">Bool</span> to <span class="inline">/obstacle_detected</span></li>
+    </ul>
+
+    <div class="alert alert-think">
+      <strong>Think:</strong> LaserScan has: <span class="inline">msg.ranges</span> (list of distances), <span class="inline">msg.angle_min</span>, <span class="inline">msg.angle_increment</span>, <span class="inline">msg.range_min</span>, <span class="inline">msg.range_max</span>. How do you get the angle for index i?
+    </div>
+
+    <div class="section-label hint">💡 Angle formula</div>
+    <pre>angle_of_index_i = msg.angle_min + i * msg.angle_increment  <span class="cm"># in radians</span>
+degrees = math.degrees(angle_of_index_i)</pre>
+
+    <button class="reveal-btn" onclick="reveal('sol7')">Show Solution</button>
+    <div class="hidden-sol" id="sol7">
+<pre><span class="kw">import</span> rclpy, math
+<span class="kw">from</span> rclpy.node <span class="kw">import</span> Node
+<span class="kw">from</span> sensor_msgs.msg <span class="kw">import</span> LaserScan
+<span class="kw">from</span> std_msgs.msg <span class="kw">import</span> Bool
+
+<span class="kw">class</span> <span class="fn">ObstacleDetector</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'obstacle_detector'</span>)
+        self.sub = self.create_subscription(
+            LaserScan, <span class="st">'/scan'</span>, self.on_scan, <span class="nu">10</span>)
+        self.pub = self.create_publisher(Bool, <span class="st">'/obstacle_detected'</span>, <span class="nu">10</span>)
+
+    <span class="kw">def</span> <span class="fn">on_scan</span>(self, msg: LaserScan):
+        valid = []
+        <span class="kw">for</span> i, r <span class="kw">in</span> enumerate(msg.ranges):
+            <span class="kw">if</span> math.isfinite(r) <span class="kw">and</span> msg.range_min <= r <= msg.range_max:
+                angle_deg = math.degrees(msg.angle_min + i * msg.angle_increment)
+                valid.append((r, angle_deg))
+
+        <span class="kw">if not</span> valid:
+            <span class="kw">return</span>
+
+        min_dist, min_angle = min(valid, key=<span class="kw">lambda</span> x: x[<span class="nu">0</span>])
+        obstacle = min_dist < <span class="nu">0.5</span>
+
+        msg_out = Bool()
+        msg_out.data = obstacle
+        self.pub.publish(msg_out)
+
+        <span class="kw">if</span> obstacle:
+            self.get_logger().warn(
+                <span class="st">f'OBSTACLE CLOSE at {min_dist:.2f}m, direction: {min_angle:.1f}°'</span>)
+        <span class="kw">else</span>:
+            self.get_logger().info(
+                <span class="st">f'CLEAR — closest: {min_dist:.2f}m at {min_angle:.1f}°'</span>)
+
+<span class="kw">def</span> <span class="fn">main</span>(args=<span class="kw">None</span>):
+    rclpy.init(args=args)
+    rclpy.spin(ObstacleDetector())
+    rclpy.shutdown()</pre>
+      <div class="alert alert-tip"><strong>This is real code used in industry.</strong> Obstacle detection from LIDAR is exactly what My Equation will want you to write.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ EX 8 -->
+<div class="ex" id="ex8">
+  <div class="ex-header" onclick="toggle('ex8')">
+    <div class="ex-num" style="background:#2a1c3a;color:#c084fc;">8</div>
+    <div class="ex-title">Velocity governor — stop robot if obstacle too close</div>
+    <span class="ex-badge badge-hard">Challenge</span>
+    <button class="done-btn" id="done8" onclick="markDone(event,'done8',8)">Mark done</button>
+  </div>
+  <div class="ex-body" id="body-ex8">
+    <div class="section-label goal">🎯 Goal</div>
+    <p>Build a safety node that sits between a velocity source and the robot:</p>
+    <ul style="padding-left:1.2rem;font-size:0.87rem;margin:0.4rem 0;">
+      <li>Subscribe to <span class="inline">/cmd_vel_raw</span> (Twist) — the unsafe commands</li>
+      <li>Subscribe to <span class="inline">/obstacle_detected</span> (Bool) — from Ex 7</li>
+      <li>Publish to <span class="inline">/cmd_vel</span> (Twist) — what actually goes to the robot</li>
+      <li>If obstacle detected → publish zero velocity regardless of input</li>
+      <li>Otherwise → pass through the raw command unchanged</li>
+      <li>Log when you block a command vs pass it through</li>
+    </ul>
+
+    <div class="alert alert-think">
+      <strong>Think:</strong> This node has TWO subscribers. Each has its own callback. They share state (<span class="inline">self.obstacle</span>). The pub/sub cycle: raw_cmd → this node → /cmd_vel. This pattern is called a "safety filter" and is used in every real robot.
+    </div>
+
+    <button class="reveal-btn" onclick="reveal('sol8')">Show Solution</button>
+    <div class="hidden-sol" id="sol8">
+<pre><span class="kw">import</span> rclpy
+<span class="kw">from</span> rclpy.node <span class="kw">import</span> Node
+<span class="kw">from</span> geometry_msgs.msg <span class="kw">import</span> Twist
+<span class="kw">from</span> std_msgs.msg <span class="kw">import</span> Bool
+
+<span class="kw">class</span> <span class="fn">VelocityGovernor</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'velocity_governor'</span>)
+        self.obstacle = <span class="kw">False</span>
+
+        self.sub_vel = self.create_subscription(
+            Twist, <span class="st">'/cmd_vel_raw'</span>, self.on_vel, <span class="nu">10</span>)
+        self.sub_obs = self.create_subscription(
+            Bool, <span class="st">'/obstacle_detected'</span>, self.on_obstacle, <span class="nu">10</span>)
+        self.pub = self.create_publisher(Twist, <span class="st">'/cmd_vel'</span>, <span class="nu">10</span>)
+
+    <span class="kw">def</span> <span class="fn">on_obstacle</span>(self, msg: Bool):
+        self.obstacle = msg.data  <span class="cm"># just update the flag</span>
+
+    <span class="kw">def</span> <span class="fn">on_vel</span>(self, msg: Twist):
+        <span class="kw">if</span> self.obstacle:
+            self.get_logger().warn(<span class="st">'BLOCKED — obstacle too close, zeroing velocity'</span>)
+            self.pub.publish(Twist())  <span class="cm"># Twist() = all zeros by default</span>
+        <span class="kw">else</span>:
+            self.get_logger().info(<span class="st">f'PASS — vx={msg.linear.x:.2f}'</span>)
+            self.pub.publish(msg)
+
+<span class="kw">def</span> <span class="fn">main</span>(args=<span class="kw">None</span>):
+    rclpy.init(args=args)
+    rclpy.spin(VelocityGovernor())
+    rclpy.shutdown()</pre>
+      <div class="alert alert-tip"><strong>Real world:</strong> This is exactly how safety layers work in industrial robots. You built a real safety architecture across Ex 7 and 8.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ EX 9 -->
+<div class="ex" id="ex9">
+  <div class="ex-header" onclick="toggle('ex9')">
+    <div class="ex-num" style="background:#2a1a00;color:#fbbf24;">9</div>
+    <div class="ex-title">MINI PROJECT — Factory machine status monitor (3 nodes)</div>
+    <span class="ex-badge badge-proj">Mini Project</span>
+    <button class="done-btn" id="done9" onclick="markDone(event,'done9',9)">Mark done</button>
+  </div>
+  <div class="ex-body" id="body-ex9">
+    <div class="section-label goal">🎯 Goal — Build this complete system</div>
+    <div class="system-box">
+      <div class="sys-title">System: Factory Machine Monitor</div>
+      <p><strong>Node 1: machine_sensor</strong> — Simulates 3 sensors: temperature (Float64 → /machine/temp), vibration (Float64 → /machine/vibration), rpm (Float64 → /machine/rpm). All published at 1Hz with realistic random values.</p>
+      <p style="margin-top:0.5rem;"><strong>Node 2: status_aggregator</strong> — Subscribes to all 3 sensors. Computes combined machine health: OK / WARNING / CRITICAL. Publishes status as String to /machine/status.</p>
+      <p style="margin-top:0.5rem;"><strong>Node 3: status_display</strong> — Subscribes to /machine/status. Logs with clear formatting. Also provides a /machine/reset service that resets all warning counters.</p>
+    </div>
+
+    <div class="section-label hint">💡 Health logic</div>
+    <pre>CRITICAL if: temp > 80°C OR vibration > 5.0 OR rpm < 500
+WARNING  if: temp > 65°C OR vibration > 3.0 OR rpm < 800
+OK       otherwise</pre>
+
+    <div class="alert alert-warn"><strong>Build this yourself first.</strong> This is the kind of system you'll build at My Equation for factory inspection. Don't look at the solution until you've tried for at least 30 minutes.</div>
+
+    <button class="reveal-btn" onclick="reveal('sol9')">Show Solution (try first!)</button>
+    <div class="hidden-sol" id="sol9">
+<pre><span class="cm">## NODE 1: machine_sensor.py</span>
+<span class="kw">import</span> rclpy, random
+<span class="kw">from</span> rclpy.node <span class="kw">import</span> Node
+<span class="kw">from</span> std_msgs.msg <span class="kw">import</span> Float64
+
+<span class="kw">class</span> <span class="fn">MachineSensor</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'machine_sensor'</span>)
+        self.temp_pub  = self.create_publisher(Float64, <span class="st">'/machine/temp'</span>, <span class="nu">10</span>)
+        self.vib_pub   = self.create_publisher(Float64, <span class="st">'/machine/vibration'</span>, <span class="nu">10</span>)
+        self.rpm_pub   = self.create_publisher(Float64, <span class="st">'/machine/rpm'</span>, <span class="nu">10</span>)
+        self.temp = <span class="nu">60.0</span>;  self.vib = <span class="nu">1.5</span>;  self.rpm = <span class="nu">1200.0</span>
+        self.create_timer(<span class="nu">1.0</span>, self.publish_all)
+
+    <span class="kw">def</span> <span class="fn">publish_all</span>(self):
+        self.temp += random.uniform(<span class="nu">-1</span>, <span class="nu">2</span>)   <span class="cm"># drifts upward</span>
+        self.vib  += random.uniform(<span class="nu">-0.2</span>, <span class="nu">0.3</span>)
+        self.rpm  += random.uniform(<span class="nu">-20</span>, <span class="nu">10</span>)
+        <span class="kw">for</span> pub, val <span class="kw">in</span> [(self.temp_pub, self.temp),
+                          (self.vib_pub,  self.vib),
+                          (self.rpm_pub,  self.rpm)]:
+            msg = Float64(); msg.data = val; pub.publish(msg)
+
+<span class="cm">## NODE 2: status_aggregator.py</span>
+<span class="kw">class</span> <span class="fn">StatusAggregator</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'status_aggregator'</span>)
+        self.temp = self.vib = self.rpm = <span class="kw">None</span>
+        self.create_subscription(Float64, <span class="st">'/machine/temp'</span>,
+                                  <span class="kw">lambda</span> m: setattr(self, <span class="st">'temp'</span>, m.data), <span class="nu">10</span>)
+        self.create_subscription(Float64, <span class="st">'/machine/vibration'</span>,
+                                  <span class="kw">lambda</span> m: setattr(self, <span class="st">'vib'</span>, m.data), <span class="nu">10</span>)
+        self.create_subscription(Float64, <span class="st">'/machine/rpm'</span>,
+                                  <span class="kw">lambda</span> m: setattr(self, <span class="st">'rpm'</span>, m.data), <span class="nu">10</span>)
+        self.pub = self.create_publisher(
+            __import__(<span class="st">'std_msgs.msg'</span>, fromlist=[<span class="st">'String'</span>]).String,
+            <span class="st">'/machine/status'</span>, <span class="nu">10</span>)
+        self.create_timer(<span class="nu">1.0</span>, self.compute_status)
+
+    <span class="kw">def</span> <span class="fn">compute_status</span>(self):
+        <span class="kw">if</span> <span class="kw">None</span> <span class="kw">in</span> (self.temp, self.vib, self.rpm): <span class="kw">return</span>
+        <span class="kw">if</span> self.temp > <span class="nu">80</span> <span class="kw">or</span> self.vib > <span class="nu">5.0</span> <span class="kw">or</span> self.rpm < <span class="nu">500</span>:
+            status = <span class="st">'CRITICAL'</span>
+        <span class="kw">elif</span> self.temp > <span class="nu">65</span> <span class="kw">or</span> self.vib > <span class="nu">3.0</span> <span class="kw">or</span> self.rpm < <span class="nu">800</span>:
+            status = <span class="st">'WARNING'</span>
+        <span class="kw">else</span>:
+            status = <span class="st">'OK'</span>
+        <span class="kw">from</span> std_msgs.msg <span class="kw">import</span> String
+        msg = String(); msg.data = status; self.pub.publish(msg)</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ EX 10 -->
+<div class="ex" id="ex10">
+  <div class="ex-header" onclick="toggle('ex10')">
+    <div class="ex-num" style="background:#2a1a00;color:#fbbf24;">10</div>
+    <div class="ex-title">MINI PROJECT — cmd_vel publisher with keyboard-like logic</div>
+    <span class="ex-badge badge-proj">Mini Project</span>
+    <button class="done-btn" id="done10" onclick="markDone(event,'done10',10)">Mark done</button>
+  </div>
+  <div class="ex-body" id="body-ex10">
+    <div class="section-label goal">🎯 Goal</div>
+    <p>Build a node that reads from a parameter <span class="inline">command</span> (string) and publishes the matching Twist to /cmd_vel. Commands: "forward", "backward", "left", "right", "stop". Use parameters so you can change direction at runtime without restarting.</p>
+    <div class="alert alert-think">
+      <strong>Think:</strong> This teaches you to control a robot purely with ros2 param set — no keyboard node needed. Used in testing and automation scripts.
+    </div>
+    <button class="reveal-btn" onclick="reveal('sol10')">Show Solution</button>
+    <div class="hidden-sol" id="sol10">
+<pre><span class="kw">import</span> rclpy
+<span class="kw">from</span> rclpy.node <span class="kw">import</span> Node
+<span class="kw">from</span> geometry_msgs.msg <span class="kw">import</span> Twist
+
+COMMANDS = {
+    <span class="st">'forward'</span>:  (<span class="nu">0.2</span>, <span class="nu">0.0</span>),
+    <span class="st">'backward'</span>: (<span class="nu">-0.2</span>, <span class="nu">0.0</span>),
+    <span class="st">'left'</span>:     (<span class="nu">0.0</span>, <span class="nu">0.5</span>),
+    <span class="st">'right'</span>:    (<span class="nu">0.0</span>, <span class="nu">-0.5</span>),
+    <span class="st">'stop'</span>:     (<span class="nu">0.0</span>, <span class="nu">0.0</span>),
+}
+
+<span class="kw">class</span> <span class="fn">CmdVelDriver</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'cmd_vel_driver'</span>)
+        self.declare_parameter(<span class="st">'command'</span>, <span class="st">'stop'</span>)
+        self.pub = self.create_publisher(Twist, <span class="st">'/cmd_vel'</span>, <span class="nu">10</span>)
+        self.create_timer(<span class="nu">0.1</span>, self.drive)
+
+    <span class="kw">def</span> <span class="fn">drive</span>(self):
+        cmd = self.get_parameter(<span class="st">'command'</span>).value
+        lin, ang = COMMANDS.get(cmd, (<span class="nu">0.0</span>, <span class="nu">0.0</span>))
+        msg = Twist()
+        msg.linear.x = lin
+        msg.angular.z = ang
+        self.pub.publish(msg)
+
+<span class="kw">def</span> <span class="fn">main</span>(args=<span class="kw">None</span>):
+    rclpy.init(args=args)
+    rclpy.spin(CmdVelDriver())
+    rclpy.shutdown()</pre>
+      <div class="alert alert-tip"><strong>Control:</strong> <span class="inline">ros2 param set /cmd_vel_driver command forward</span> → robot moves. <span class="inline">ros2 param set /cmd_vel_driver command stop</span> → stops.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ EX 11 - SYSTEM DESIGN -->
+<div class="ex" id="ex11">
+  <div class="ex-header" onclick="toggle('ex11')">
+    <div class="ex-num" style="background:#2a1a00;color:#fbbf24;">11</div>
+    <div class="ex-title">FINAL CHALLENGE — Design + build a 4-node inspection robot system</div>
+    <span class="ex-badge badge-proj">Final</span>
+    <button class="done-btn" id="done11" onclick="markDone(event,'done11',11)">Mark done</button>
+  </div>
+  <div class="ex-body" id="body-ex11">
+    <div class="section-label goal">🎯 Goal — Design before you code</div>
+    <p>Before writing any code, draw (on paper or text) the node graph:</p>
+    <div class="system-box">
+      <div class="sys-title">Inspection Robot System</div>
+      <p>Build a 4-node system where:</p>
+      <p>1. <strong>sensor_hub</strong> — publishes fake LIDAR, temperature, and battery level</p>
+      <p>2. <strong>safety_monitor</strong> — watches all sensors, publishes /system_ok (Bool), stops robot if unsafe</p>
+      <p>3. <strong>mission_controller</strong> — sends robot to waypoints in a list (x,y pairs), waits for /system_ok before each move</p>
+      <p>4. <strong>status_reporter</strong> — logs a full status report every 5 seconds: battery%, current waypoint, system status</p>
+    </div>
+
+    <div class="alert alert-warn">
+      <strong>This is your internship simulation.</strong> Spend 1-2 hours on this. Don't look at hints. Design the topics/services first on paper. Then code node by node. Test each node before wiring them together.
+    </div>
+
+    <div class="section-label think">🧠 Questions to answer BEFORE coding</div>
+    <ul style="padding-left:1.2rem;font-size:0.87rem;line-height:2;">
+      <li>What topics does each node publish and subscribe to?</li>
+      <li>Does mission_controller need a service or just a topic to check /system_ok?</li>
+      <li>How do you make the robot "wait" before moving to the next waypoint in Python?</li>
+      <li>If battery drops below 20%, what should happen?</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ PYTHON PATTERNS CHEAT SHEET -->
+<div class="ex" id="ex12">
+  <div class="ex-header" onclick="toggle('ex12')">
+    <div class="ex-num" style="background:#0c2a1a;color:#4ade80;">★</div>
+    <div class="ex-title">Python ROS 2 — Patterns you must know cold</div>
+    <span class="ex-badge badge-warm">Reference</span>
+    <button class="done-btn" id="done12" onclick="markDone(event,'done12',12)">Mark done</button>
+  </div>
+  <div class="ex-body" id="body-ex12">
+    <table>
+      <tr><th>Pattern</th><th>When to use</th></tr>
+      <tr><td class="inline">Twist() with all zeros</td><td>Emergency stop — Twist() constructor gives all-zero message</td></tr>
+      <tr><td class="inline">lambda m: setattr(self,'x',m.data)</td><td>Quick subscriber when callback is just storing a value</td></tr>
+      <tr><td class="inline">math.isfinite(r)</td><td>Always filter LIDAR ranges — inf and nan break your logic</td></tr>
+      <tr><td class="inline">min(valid, key=lambda x: x[0])</td><td>Find closest obstacle from list of (distance, angle) tuples</td></tr>
+      <tr><td class="inline">rclpy.spin_until_future_complete()</td><td>Blocking service call — wait for response before continuing</td></tr>
+      <tr><td class="inline">future.add_done_callback(fn)</td><td>Non-blocking service call — callback fires when response arrives</td></tr>
+      <tr><td class="inline">self.get_parameter('x').value</td><td>Read parameter — call inside callback to pick up runtime changes</td></tr>
+      <tr><td class="inline">if None in (a, b, c): return</td><td>Guard against callbacks not yet received — prevents crashes on startup</td></tr>
+    </table>
+<pre><span class="cm"># Complete node template — memorize this shape</span>
+<span class="kw">import</span> rclpy
+<span class="kw">from</span> rclpy.node <span class="kw">import</span> Node
+
+<span class="kw">class</span> <span class="fn">MyNode</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'my_node'</span>)
+        <span class="cm"># 1. declare params</span>
+        <span class="cm"># 2. create publishers</span>
+        <span class="cm"># 3. create subscribers</span>
+        <span class="cm"># 4. create services</span>
+        <span class="cm"># 5. create timers (always last)</span>
+        self.get_logger().info(<span class="st">'Ready'</span>)
+
+<span class="kw">def</span> <span class="fn">main</span>(args=<span class="kw">None</span>):
+    rclpy.init(args=args)
+    node = MyNode()
+    <span class="kw">try</span>:
+        rclpy.spin(node)
+    <span class="kw">except</span> KeyboardInterrupt:
+        <span class="kw">pass</span>
+    <span class="kw">finally</span>:
+        node.destroy_node()
+        rclpy.shutdown()</pre>
+  </div>
+</div>
+
+</div>
+
+<script>
+  function toggle(id) {
+    const body = document.getElementById('body-' + id);
+    body.classList.toggle('open');
+  }
+  function reveal(id) {
+    document.getElementById(id).classList.add('shown');
+  }
+  const done = {};
+  function markDone(e, btnId, num) {
+    e.stopPropagation();
+    const btn = document.getElementById(btnId);
+    done[num] = !done[num];
+    btn.classList.toggle('done');
+    btn.textContent = done[num] ? '✓ Done' : 'Mark done';
+    updateProgress();
+  }
+  function updateProgress() {
+    const count = Object.values(done).filter(Boolean).length;
+    const pct = (count / 12) * 100;
+    document.getElementById('prog').style.width = pct + '%';
+    document.getElementById('prog-text').textContent = count + ' / 12 completed';
+  }
+  // open first exercise by default
+  document.getElementById('body-ex1').classList.add('open');
+</script>
+</body>
+</html>
