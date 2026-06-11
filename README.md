@@ -1,22 +1,24 @@
-🐍 ROS 2 Python Bootcamp
+# 🐍 ROS 2 Python Bootcamp
 
-An interactive practice-first bootcamp designed to bridge the gap between learning Python and writing real ROS 2 applications.
+An interactive **practice-first** bootcamp designed to bridge the gap between **learning Python** and **writing real ROS 2 applications**.
 
 Instead of reading theory endlessly, this bootcamp encourages you to:
 
-«Write → Run → Break → Fix → Learn»
+> **Write → Run → Break → Fix → Learn**
 
 ---
 
-Why I Built This
+## 🚀 Why I Built This
 
 While learning ROS 2, I noticed that most Python tutorials teach syntax but rarely explain how that knowledge translates into robotics applications.
 
-So I created this interactive HTML bootcamp to practice Python directly through ROS 2-inspired exercises and mini projects.
+So I created this interactive HTML bootcamp to practice Python directly through **ROS 2-inspired exercises and mini projects**.
+
+My LinkedIn Profile : https://linkedin.com/in/omgajjar1976
 
 ---
 
-Features
+## ✨ Features
 
 - ✅ Interactive HTML interface
 - ✅ Progressive difficulty
@@ -28,7 +30,7 @@ Features
 
 ---
 
-Topics Covered
+## 📚 Topics Covered
 
 - ROS 2 Node Basics
 - Publishers
@@ -48,7 +50,7 @@ Topics Covered
 
 ---
 
-Learning Philosophy
+## 🎯 Learning Philosophy
 
 This project follows a simple rule:
 
@@ -58,34 +60,36 @@ This project follows a simple rule:
 4. Compare it with the provided solution.
 5. Understand the differences.
 
-The goal is to build intuition—not memorize code.
+The goal is to **build intuition—not memorize code.**
 
 ---
 
-Project Structure
+## 📁 Project Structure
 
+```text
 ROS2_Python_Bootcamp.html
+```
 
 Open the HTML file in your browser and start solving exercises.
 
-No additional setup is required for reading the content.
+No additional setup is required.
 
 ---
 
-Who Is This For?
+## 👨‍💻 Who Is This For?
 
-- Robotics beginners
-- ROS 2 learners
-- Python programmers entering robotics
-- Engineering students
-- Embedded developers
-- Anyone preparing for robotics internships or projects
+- 🤖 Robotics beginners
+- 🚀 ROS 2 learners
+- 🐍 Python programmers entering robotics
+- 🎓 Engineering students
+- 🔧 Embedded developers
+- 🏭 Anyone preparing for robotics internships or projects
 
 ---
 
-Future Improvements
+## 🛣️ Future Improvements
 
-- [ ] Action server/client exercises
+- [ ] ROS 2 Actions (Action Server/Client)
 - [ ] TF2 examples
 - [ ] Launch files
 - [ ] Lifecycle nodes
@@ -96,22 +100,22 @@ Future Improvements
 
 ---
 
-Contributions
+## 🤝 Contributions
 
-Contributions are welcome.
+Contributions are welcome!
 
-Feel free to open Issues or Pull Requests with:
+Feel free to open **Issues** or submit **Pull Requests** for:
 
-- New exercises
-- Better explanations
-- Bug fixes
-- Additional ROS 2 examples
+- ➕ New exercises
+- 📝 Better explanations
+- 🐞 Bug fixes
+- 💡 Additional ROS 2 examples
 
 ---
 
-Author
+## 👤 Author
 
-Om Gajjar
+**Om Gajjar**
 
 If this project helps you, consider giving it a ⭐ on GitHub and sharing it with others learning ROS 2.
 
