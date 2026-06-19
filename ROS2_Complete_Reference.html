@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ROS 2 Complete Reference — Om Gajjar</title>
+<style>
+  :root {
+    --bg:#0f172a; --card:#1e293b; --border:#334155;
+    --blue:#3b82f6; --teal:#0d9488; --green:#16a34a;
+    --amber:#d97706; --red:#dc2626; --purple:#7c3aed;
+    --white:#f1f5f9; --muted:#94a3b8; --code:#0f2040;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--white);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.7;}
+  .wrap{max-width:1100px;margin:0 auto;padding:1.5rem 1rem;}
+
+  /* NAV */
+  .toc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:2rem;}
+  .toc h2{color:var(--blue);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.8rem;}
+  .toc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0.3rem 1.5rem;}
+  .toc a{color:var(--muted);text-decoration:none;font-size:0.82rem;}
+  .toc a:hover{color:var(--blue);}
+
+  /* HEADER */
+  .header{background:linear-gradient(135deg,#1e3a8a,#0d9488);border-radius:14px;padding:2rem;margin-bottom:2rem;}
+  .header h1{font-size:1.8rem;font-weight:700;margin-bottom:0.4rem;}
+  .header p{color:rgba(255,255,255,0.8);font-size:0.9rem;}
+
+  /* SECTIONS */
+  section{margin-bottom:2rem;}
+  .sec-title{font-size:1.15rem;font-weight:700;color:var(--blue);border-bottom:2px solid var(--border);padding-bottom:0.5rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:0.5rem;}
+  h3{font-size:0.95rem;font-weight:700;color:var(--teal);margin:1.2rem 0 0.5rem;}
+  h4{font-size:0.87rem;font-weight:700;color:var(--amber);margin:0.9rem 0 0.3rem;}
+  p{margin-bottom:0.6rem;color:var(--white);font-size:0.88rem;}
+
+  /* CARDS */
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin-bottom:1rem;}
+  .card-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+  @media(max-width:700px){.card-row{grid-template-columns:1fr;}}
+
+  /* CODE */
+  pre{background:var(--code);border:1px solid var(--border);border-radius:8px;padding:1rem 1.2rem;overflow-x:auto;font-size:0.8rem;line-height:1.6;margin:0.6rem 0;}
+  code{font-family:'Courier New',monospace;font-size:0.82rem;}
+  .inline{background:#1e293b;border-radius:4px;padding:0.1rem 0.4rem;font-family:'Courier New',monospace;font-size:0.8rem;color:#7dd3fc;}
+
+  /* TERMINAL */
+  .term{background:#000;border:1px solid #333;border-radius:8px;padding:0.9rem 1.1rem;margin:0.6rem 0;}
+  .term code{color:#4ade80;font-family:'Courier New',monospace;font-size:0.8rem;}
+  .term .comment{color:#6b7280;}
+  .term .cmd{color:#facc15;}
+
+  /* BADGES */
+  .badge{display:inline-block;border-radius:5px;font-size:0.7rem;font-weight:700;padding:0.15rem 0.55rem;text-transform:uppercase;letter-spacing:0.05em;margin-right:0.3rem;}
+  .b-blue{background:#1d4ed8;color:#fff;}
+  .b-green{background:#15803d;color:#fff;}
+  .b-amber{background:#92400e;color:#fff;}
+  .b-red{background:#991b1b;color:#fff;}
+  .b-purple{background:#6d28d9;color:#fff;}
+  .b-teal{background:#0f766e;color:#fff;}
+
+  /* ALERT BOXES */
+  .alert{border-radius:8px;padding:0.75rem 1rem;margin:0.7rem 0;font-size:0.85rem;}
+  .alert-tip{background:#0c2a1a;border-left:4px solid var(--green);}
+  .alert-warn{background:#2a1c00;border-left:4px solid var(--amber);}
+  .alert-err{background:#2a0c0c;border-left:4px solid var(--red);}
+  .alert-info{background:#0c1a2a;border-left:4px solid var(--blue);}
+  .alert strong{display:block;margin-bottom:0.2rem;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.05em;}
+  .alert-tip strong{color:var(--green);}
+  .alert-warn strong{color:var(--amber);}
+  .alert-err strong{color:var(--red);}
+  .alert-info strong{color:var(--blue);}
+
+  /* TABLE */
+  table{width:100%;border-collapse:collapse;font-size:0.83rem;margin:0.7rem 0;}
+  th{background:#1e3a8a;color:#fff;padding:0.5rem 0.8rem;text-align:left;font-weight:600;font-size:0.78rem;}
+  td{padding:0.45rem 0.8rem;border-bottom:1px solid var(--border);}
+  tr:nth-child(even) td{background:#131e2e;}
+
+  /* SYNTAX HIGHLIGHT */
+  .kw{color:#c084fc;}
+  .fn{color:#60a5fa;}
+  .st{color:#86efac;}
+  .cm{color:#475569;}
+  .nu{color:#fbbf24;}
+  .dc{color:#f472b6;}
+
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  @media(max-width:700px){.two{grid-template-columns:1fr;}}
+  .divider{border:none;border-top:1px solid var(--border);margin:1.5rem 0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="header">
+  <h1>ROS 2 — Complete Practical Reference</h1>
+  <p>From node creation → topics → services → actions → Nav2 stack · Written for Om Gajjar · Internship prep June 2026</p>
+</div>
+
+<div class="toc">
+  <h2>Contents</h2>
+  <div class="toc-grid">
+    <a href="#s1">1. Workspace &amp; Package Setup</a>
+    <a href="#s2">2. Nodes — Python &amp; C++</a>
+    <a href="#s3">3. Topics — Publisher &amp; Subscriber</a>
+    <a href="#s4">4. Services — Server &amp; Client</a>
+    <a href="#s5">5. Actions — Server &amp; Client</a>
+    <a href="#s6">6. Parameters</a>
+    <a href="#s7">7. Launch Files</a>
+    <a href="#s8">8. TF2 — Transforms</a>
+    <a href="#s9">9. Nav2 Stack Deep Dive</a>
+    <a href="#s10">10. CLI — All Terminal Commands</a>
+    <a href="#s11">11. Debugging Guide</a>
+    <a href="#s12">12. Common Errors &amp; Fixes</a>
+    <a href="#s13">13. Quick Reference Card</a>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ 1. WORKSPACE -->
+<section id="s1">
+<div class="sec-title">🗂 1. Workspace &amp; Package Setup</div>
+
+<div class="card">
+<h3>Workspace structure</h3>
+<pre><span class="cm"># A ROS 2 workspace looks like this:</span>
+ros2_ws/
+├── src/               <span class="cm"># all your packages live here</span>
+│   ├── my_package/
+│   │   ├── my_package/       <span class="cm"># Python module (same name)</span>
+│   │   │   ├── __init__.py
+│   │   │   └── my_node.py
+│   │   ├── package.xml
+│   │   ├── setup.py
+│   │   └── setup.cfg
+│   └── my_cpp_package/
+│       ├── src/
+│       │   └── my_node.cpp
+│       ├── include/
+│       ├── CMakeLists.txt
+│       └── package.xml
+├── build/             <span class="cm"># generated by colcon — never edit</span>
+├── install/           <span class="cm"># generated by colcon — source this</span>
+└── log/</pre>
+</div>
+
+<div class="card">
+<h3>Create workspace + package</h3>
+<div class="term"><code>
+<span class="comment"># Create workspace</span><br>
+mkdir -p ~/ros2_ws/src &amp;&amp; cd ~/ros2_ws<br><br>
+<span class="comment"># Create Python package</span><br>
+cd src<br>
+ros2 pkg create --build-type ament_python my_package --dependencies rclpy std_msgs<br><br>
+<span class="comment"># Create C++ package</span><br>
+ros2 pkg create --build-type ament_cmake my_cpp_package --dependencies rclcpp std_msgs<br><br>
+<span class="comment"># Build everything</span><br>
+cd ~/ros2_ws<br>
+colcon build<br><br>
+<span class="comment"># Build only one package (faster)</span><br>
+colcon build --packages-select my_package<br><br>
+<span class="comment"># Source after EVERY build (mandatory)</span><br>
+source install/setup.bash<br><br>
+<span class="comment"># Add to .bashrc so it auto-sources</span><br>
+echo "source ~/ros2_ws/install/setup.bash" >> ~/.bashrc
+</code></div>
+</div>
+
+<div class="card">
+<h3>setup.py — register your nodes (Python packages only)</h3>
+<pre><span class="cm"># setup.py — must list every node as an entry point</span>
+from setuptools import setup
+
+setup(
+    name=<span class="st">'my_package'</span>,
+    version=<span class="st">'0.0.1'</span>,
+    packages=[<span class="st">'my_package'</span>],
+    install_requires=[<span class="st">'setuptools'</span>],
+    entry_points={
+        <span class="st">'console_scripts'</span>: [
+            <span class="st">'my_node = my_package.my_node:main'</span>,
+            <span class="cm">#  ^alias      ^module.file  ^function</span>
+        ],
+    },
+)</pre>
+<div class="alert alert-warn"><strong>When to rebuild</strong>After editing setup.py, always run <span class="inline">colcon build --packages-select my_package</span> again.</div>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════════════════════════════════ 2. NODES -->
+<section id="s2">
+<div class="sec-title">🔵 2. Nodes</div>
+
+<p>A <strong>node</strong> is a single executable process that does one thing. Nodes communicate via topics, services, and actions. One package can have multiple nodes.</p>
+
+<div class="card-row">
+<div class="card">
+<h3>Python node — minimal</h3>
+<pre><span class="kw">import</span> rclpy
+<span class="kw">from</span> rclpy.node <span class="kw">import</span> Node
+
+<span class="kw">class</span> <span class="fn">MyNode</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        <span class="cm"># 'my_node' is the node name seen in ros2 node list</span>
+        super().__init__(<span class="st">'my_node'</span>)
+        self.get_logger().info(<span class="st">'Node started!'</span>)
+
+        <span class="cm"># Timer — runs callback every 0.5 seconds</span>
+        self.timer = self.create_timer(<span class="nu">0.5</span>, self.timer_cb)
+
+    <span class="kw">def</span> <span class="fn">timer_cb</span>(self):
+        self.get_logger().info(<span class="st">'Tick'</span>)
+
+<span class="kw">def</span> <span class="fn">main</span>(args=<span class="kw">None</span>):
+    rclpy.init(args=args)          <span class="cm"># init ROS 2</span>
+    node = MyNode()
+    rclpy.spin(node)               <span class="cm"># keep alive, process callbacks</span>
+    node.destroy_node()
+    rclpy.shutdown()
+
+<span class="kw">if</span> __name__ == <span class="st">'__main__'</span>:
+    main()</pre>
+</div>
+<div class="card">
+<h3>C++ node — minimal</h3>
+<pre><span class="kw">#include</span> <span class="st">"rclcpp/rclcpp.hpp"</span>
+
+<span class="kw">class</span> <span class="fn">MyNode</span> : <span class="kw">public</span> rclcpp::Node {
+<span class="kw">public</span>:
+    <span class="fn">MyNode</span>() : Node(<span class="st">"my_node"</span>) {
+        RCLCPP_INFO(get_logger(), <span class="st">"Node started!"</span>);
+        timer_ = create_wall_timer(
+            std::chrono::milliseconds(<span class="nu">500</span>),
+            std::bind(&amp;MyNode::timer_cb, <span class="kw">this</span>));
+    }
+<span class="kw">private</span>:
+    <span class="kw">void</span> <span class="fn">timer_cb</span>() {
+        RCLCPP_INFO(get_logger(), <span class="st">"Tick"</span>);
+    }
+    rclcpp::TimerBase::SharedPtr timer_;
+};
+
+<span class="kw">int</span> <span class="fn">main</span>(<span class="kw">int</span> argc, <span class="kw">char</span>** argv) {
+    rclcpp::init(argc, argv);
+    rclcpp::spin(std::make_shared&lt;MyNode&gt;());
+    rclcpp::shutdown();
+    <span class="kw">return</span> <span class="nu">0</span>;
+}</pre>
+</div>
+</div>
+
+<div class="card">
+<h3>Run, list, inspect nodes</h3>
+<div class="term"><code>
+<span class="comment"># Run a node</span><br>
+ros2 run my_package my_node<br><br>
+<span class="comment"># List all running nodes</span><br>
+ros2 node list<br><br>
+<span class="comment"># Inspect a node (topics, services, actions it uses)</span><br>
+ros2 node info /my_node<br><br>
+<span class="comment"># Run with remapping (rename topic at launch)</span><br>
+ros2 run my_package my_node --ros-args -r /old_topic:=/new_topic<br><br>
+<span class="comment"># Run with namespace</span><br>
+ros2 run my_package my_node --ros-args -r __ns:=/robot1
+</code></div>
+</div>
+
+<div class="card">
+<h3>Logger levels — when to use which</h3>
+<table>
+<tr><th>Level</th><th>Python</th><th>When to use</th></tr>
+<tr><td><span class="badge b-blue">DEBUG</span></td><td class="inline">self.get_logger().debug()</td><td>Verbose data, loop values — hidden by default</td></tr>
+<tr><td><span class="badge b-teal">INFO</span></td><td class="inline">self.get_logger().info()</td><td>Normal operation events — node started, goal received</td></tr>
+<tr><td><span class="badge b-amber">WARN</span></td><td class="inline">self.get_logger().warn()</td><td>Something unexpected but recoverable</td></tr>
+<tr><td><span class="badge b-red">ERROR</span></td><td class="inline">self.get_logger().error()</td><td>Something failed, action cannot proceed</td></tr>
+<tr><td><span class="badge b-red">FATAL</span></td><td class="inline">self.get_logger().fatal()</td><td>System cannot continue — about to crash</td></tr>
+</table>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════════════════════════════════ 3. TOPICS -->
+<section id="s3">
+<div class="sec-title">📡 3. Topics — Publisher &amp; Subscriber</div>
+
+<p><strong>When to use:</strong> Continuous streaming data — sensor readings, images, velocity commands, pose updates. Fire-and-forget. No response expected.</p>
+
+<div class="card-row">
+<div class="card">
+<h3>Publisher (Python)</h3>
+<pre><span class="kw">from</span> std_msgs.msg <span class="kw">import</span> String
+<span class="kw">from</span> geometry_msgs.msg <span class="kw">import</span> Twist
+
+<span class="kw">class</span> <span class="fn">MyPublisher</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'publisher_node'</span>)
+
+        <span class="cm"># Create publisher: topic name, msg type, queue size</span>
+        self.pub = self.create_publisher(
+            Twist, <span class="st">'/cmd_vel'</span>, <span class="nu">10</span>)
+
+        self.timer = self.create_timer(<span class="nu">0.1</span>, self.publish_cb)
+
+    <span class="kw">def</span> <span class="fn">publish_cb</span>(self):
+        msg = Twist()
+        msg.linear.x = <span class="nu">0.2</span>   <span class="cm"># forward</span>
+        msg.angular.z = <span class="nu">0.0</span>  <span class="cm"># no rotation</span>
+        self.pub.publish(msg)
+        self.get_logger().info(<span class="st">'Published velocity'</span>)</pre>
+</div>
+<div class="card">
+<h3>Subscriber (Python)</h3>
+<pre><span class="kw">from</span> sensor_msgs.msg <span class="kw">import</span> LaserScan
+<span class="kw">from</span> nav_msgs.msg <span class="kw">import</span> OccupancyGrid
+
+<span class="kw">class</span> <span class="fn">MySubscriber</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'subscriber_node'</span>)
+
+        <span class="cm"># Subscribe: topic, msg type, callback, queue size</span>
+        self.sub = self.create_subscription(
+            LaserScan,
+            <span class="st">'/scan'</span>,
+            self.scan_callback,
+            <span class="nu">10</span>)
+
+    <span class="kw">def</span> <span class="fn">scan_callback</span>(self, msg: LaserScan):
+        <span class="cm"># msg contains all fields of the message type</span>
+        min_range = min(r <span class="kw">for</span> r <span class="kw">in</span> msg.ranges
+                        <span class="kw">if</span> r > msg.range_min)
+        self.get_logger().info(
+            <span class="st">f'Closest obstacle: {min_range:.2f}m'</span>)</pre>
+</div>
+</div>
+
+<div class="card">
+<h3>Topic CLI commands</h3>
+<div class="term"><code>
+<span class="comment"># List all active topics</span><br>
+ros2 topic list<br>
+ros2 topic list -t  <span class="comment"># with message types</span><br><br>
+<span class="comment"># See what's being published (live data)</span><br>
+ros2 topic echo /scan<br>
+ros2 topic echo /cmd_vel<br>
+ros2 topic echo /amcl_pose<br><br>
+<span class="comment"># Check publish rate (Hz)</span><br>
+ros2 topic hz /scan<br>
+ros2 topic hz /camera/image_raw<br><br>
+<span class="comment"># Check message bandwidth</span><br>
+ros2 topic bw /scan<br><br>
+<span class="comment"># Publish manually from terminal (testing)</span><br>
+ros2 topic pub /cmd_vel geometry_msgs/Twist "{linear: {x: 0.2}, angular: {z: 0.0}}" --once<br><br>
+<span class="comment"># Publish repeatedly at 10Hz</span><br>
+ros2 topic pub /cmd_vel geometry_msgs/Twist "{linear: {x: 0.2}}" --rate 10<br><br>
+<span class="comment"># Get message type info</span><br>
+ros2 interface show geometry_msgs/msg/Twist<br>
+ros2 interface show sensor_msgs/msg/LaserScan
+</code></div>
+</div>
+
+<div class="card">
+<h3>Common message types — know these</h3>
+<table>
+<tr><th>Message</th><th>Package</th><th>Used for</th></tr>
+<tr><td class="inline">std_msgs/String</td><td>std_msgs</td><td>Simple text</td></tr>
+<tr><td class="inline">std_msgs/Float64</td><td>std_msgs</td><td>Single number</td></tr>
+<tr><td class="inline">geometry_msgs/Twist</td><td>geometry_msgs</td><td>Velocity commands (/cmd_vel)</td></tr>
+<tr><td class="inline">geometry_msgs/Pose</td><td>geometry_msgs</td><td>Position + orientation</td></tr>
+<tr><td class="inline">geometry_msgs/PoseWithCovarianceStamped</td><td>geometry_msgs</td><td>/initialpose, /amcl_pose</td></tr>
+<tr><td class="inline">sensor_msgs/LaserScan</td><td>sensor_msgs</td><td>LIDAR data (/scan)</td></tr>
+<tr><td class="inline">sensor_msgs/Image</td><td>sensor_msgs</td><td>Camera frames</td></tr>
+<tr><td class="inline">sensor_msgs/Imu</td><td>sensor_msgs</td><td>IMU data</td></tr>
+<tr><td class="inline">nav_msgs/OccupancyGrid</td><td>nav_msgs</td><td>Map (/map)</td></tr>
+<tr><td class="inline">nav_msgs/Odometry</td><td>nav_msgs</td><td>Robot odometry (/odom)</td></tr>
+<tr><td class="inline">nav_msgs/Path</td><td>nav_msgs</td><td>Planned path (/plan)</td></tr>
+</table>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════════════════════════════════ 4. SERVICES -->
+<section id="s4">
+<div class="sec-title">🔧 4. Services — Request / Response</div>
+
+<p><strong>When to use:</strong> One-time operations where you need a result back. Examples: clear costmap, get map, set a parameter, trigger a camera. NOT for continuous data.</p>
+
+<div class="card-row">
+<div class="card">
+<h3>Service Server (Python)</h3>
+<pre><span class="kw">from</span> std_srvs.srv <span class="kw">import</span> SetBool
+<span class="kw">from</span> example_interfaces.srv <span class="kw">import</span> AddTwoInts
+
+<span class="kw">class</span> <span class="fn">MyServer</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'my_server'</span>)
+        self.srv = self.create_service(
+            SetBool,          <span class="cm"># service type</span>
+            <span class="st">'enable_motor'</span>,  <span class="cm"># service name</span>
+            self.handle_req)  <span class="cm"># callback</span>
+
+    <span class="kw">def</span> <span class="fn">handle_req</span>(self, request, response):
+        <span class="cm"># request.data is the bool sent by client</span>
+        <span class="kw">if</span> request.data:
+            self.get_logger().info(<span class="st">'Motor ON'</span>)
+        response.success = <span class="kw">True</span>
+        response.message = <span class="st">'Done'</span>
+        <span class="kw">return</span> response  <span class="cm"># MUST return response</span></pre>
+</div>
+<div class="card">
+<h3>Service Client (Python)</h3>
+<pre><span class="kw">from</span> std_srvs.srv <span class="kw">import</span> SetBool
+
+<span class="kw">class</span> <span class="fn">MyClient</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'my_client'</span>)
+        self.cli = self.create_client(
+            SetBool, <span class="st">'enable_motor'</span>)
+
+        <span class="cm"># Wait for service to be available</span>
+        <span class="kw">while not</span> self.cli.wait_for_service(timeout_sec=<span class="nu">1.0</span>):
+            self.get_logger().warn(<span class="st">'Waiting for service...'</span>)
+
+    <span class="kw">def</span> <span class="fn">call_service</span>(self, enable: bool):
+        req = SetBool.Request()
+        req.data = enable
+        future = self.cli.call_async(req)
+        <span class="cm"># Spin until future completes</span>
+        rclpy.spin_until_future_complete(self, future)
+        <span class="kw">return</span> future.result()</pre>
+</div>
+</div>
+
+<div class="card">
+<h3>Service CLI commands</h3>
+<div class="term"><code>
+<span class="comment"># List all available services</span><br>
+ros2 service list<br>
+ros2 service list -t  <span class="comment"># with types</span><br><br>
+<span class="comment"># Call a service manually</span><br>
+ros2 service call /clear_costmap std_srvs/srv/Empty<br><br>
+<span class="comment"># SetBool service</span><br>
+ros2 service call /enable_motor std_srvs/srv/SetBool "{data: true}"<br><br>
+<span class="comment"># Nav2 — clear costmaps (used in our TB4 project)</span><br>
+ros2 service call /global_costmap/clear_entirely_global_costmap nav2_msgs/srv/ClearEntireCostmap {}<br>
+ros2 service call /local_costmap/clear_entirely_local_costmap nav2_msgs/srv/ClearEntireCostmap {}<br><br>
+<span class="comment"># Get map from map_server</span><br>
+ros2 service call /map_server/map nav_msgs/srv/GetMap {}<br><br>
+<span class="comment"># Check service type</span><br>
+ros2 service type /enable_motor<br>
+ros2 interface show std_srvs/srv/SetBool
+</code></div>
+</div>
+
+<div class="card">
+<h3>Custom service definition (.srv file)</h3>
+<pre><span class="cm"># my_package/srv/MoveRobot.srv</span>
+float64 distance    <span class="cm"># request fields above ---</span>
+float64 speed
+---                 <span class="cm"># separator</span>
+bool success        <span class="cm"># response fields below ---</span>
+string message</pre>
+<div class="alert alert-info"><strong>After creating .srv</strong>Add to CMakeLists.txt (C++) or package.xml, then rebuild.</div>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════════════════════════════════ 5. ACTIONS -->
+<section id="s5">
+<div class="sec-title">🎯 5. Actions — Long Running Goals with Feedback</div>
+
+<p><strong>When to use:</strong> Long tasks where you need progress updates AND can cancel. Navigation goals, robot arm movements, multi-step operations. This is how Nav2 NavigateToPose works.</p>
+
+<div class="card">
+<h3>Action Server (Python)</h3>
+<pre><span class="kw">import</span> rclpy, time
+<span class="kw">from</span> rclpy.action <span class="kw">import</span> ActionServer
+<span class="kw">from</span> action_tutorials_interfaces.action <span class="kw">import</span> Fibonacci
+
+<span class="kw">class</span> <span class="fn">MyActionServer</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'action_server'</span>)
+        self._server = ActionServer(
+            self,
+            Fibonacci,            <span class="cm"># action type</span>
+            <span class="st">'compute_fibonacci'</span>,  <span class="cm"># action name</span>
+            self.execute_cb)      <span class="cm"># execution callback</span>
+
+    <span class="kw">def</span> <span class="fn">execute_cb</span>(self, goal_handle):
+        self.get_logger().info(<span class="st">'Goal received!'</span>)
+        result = Fibonacci.Result()
+        feedback = Fibonacci.Feedback()
+
+        sequence = [<span class="nu">0</span>, <span class="nu">1</span>]
+        <span class="kw">for</span> i <span class="kw">in</span> range(<span class="nu">1</span>, goal_handle.request.order):
+            sequence.append(sequence[i] + sequence[i-<span class="nu">1</span>])
+            feedback.partial_sequence = sequence
+            goal_handle.publish_feedback(feedback)  <span class="cm"># send progress</span>
+            time.sleep(<span class="nu">0.5</span>)
+
+        goal_handle.succeed()         <span class="cm"># mark goal as done</span>
+        result.sequence = sequence
+        <span class="kw">return</span> result</pre>
+</div>
+
+<div class="card">
+<h3>Action Client (Python)</h3>
+<pre><span class="kw">from</span> rclpy.action <span class="kw">import</span> ActionClient
+<span class="kw">from</span> nav2_msgs.action <span class="kw">import</span> NavigateToPose
+<span class="kw">from</span> geometry_msgs.msg <span class="kw">import</span> PoseStamped
+
+<span class="kw">class</span> <span class="fn">NavClient</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'nav_client'</span>)
+        self.client = ActionClient(self, NavigateToPose, <span class="st">'/navigate_to_pose'</span>)
+
+    <span class="kw">def</span> <span class="fn">send_goal</span>(self, x, y, yaw):
+        goal = NavigateToPose.Goal()
+        goal.pose.header.frame_id = <span class="st">'map'</span>
+        goal.pose.pose.position.x = x
+        goal.pose.pose.position.y = y
+        <span class="cm"># yaw to quaternion</span>
+        <span class="kw">import</span> math
+        goal.pose.pose.orientation.z = math.sin(yaw/<span class="nu">2</span>)
+        goal.pose.pose.orientation.w = math.cos(yaw/<span class="nu">2</span>)
+
+        self.client.wait_for_server()
+        future = self.client.send_goal_async(
+            goal,
+            feedback_callback=self.feedback_cb)
+        future.add_done_callback(self.goal_response_cb)
+
+    <span class="kw">def</span> <span class="fn">feedback_cb</span>(self, feedback_msg):
+        dist = feedback_msg.feedback.distance_remaining
+        self.get_logger().info(<span class="st">f'Distance remaining: {dist:.2f}m'</span>)
+
+    <span class="kw">def</span> <span class="fn">goal_response_cb</span>(self, future):
+        handle = future.result()
+        <span class="kw">if not</span> handle.accepted:
+            self.get_logger().error(<span class="st">'Goal rejected!'</span>)
+            <span class="kw">return</span>
+        result_future = handle.get_result_async()
+        result_future.add_done_callback(self.result_cb)
+
+    <span class="kw">def</span> <span class="fn">result_cb</span>(self, future):
+        result = future.result().result
+        self.get_logger().info(<span class="st">'Goal reached!'</span>)</pre>
+</div>
+
+<div class="card">
+<h3>Action CLI commands</h3>
+<div class="term"><code>
+<span class="comment"># List all action servers</span><br>
+ros2 action list<br>
+ros2 action list -t<br><br>
+<span class="comment"># Inspect an action</span><br>
+ros2 action info /navigate_to_pose<br><br>
+<span class="comment"># Send a nav goal manually</span><br>
+ros2 action send_goal /navigate_to_pose nav2_msgs/action/NavigateToPose \<br>
+  "{pose: {header: {frame_id: map}, pose: {position: {x: 1.0, y: 0.5}, orientation: {w: 1.0}}}}"<br><br>
+<span class="comment"># Send goal with feedback printed</span><br>
+ros2 action send_goal /navigate_to_pose nav2_msgs/action/NavigateToPose \<br>
+  "{pose: ...}" --feedback<br><br>
+<span class="comment"># Check action interface</span><br>
+ros2 interface show nav2_msgs/action/NavigateToPose
+</code></div>
+</div>
+
+<div class="card">
+<h3>Topics vs Services vs Actions — decision table</h3>
+<table>
+<tr><th></th><th>Topics</th><th>Services</th><th>Actions</th></tr>
+<tr><td><strong>Pattern</strong></td><td>Publish/Subscribe</td><td>Request/Response</td><td>Goal/Feedback/Result</td></tr>
+<tr><td><strong>Response?</strong></td><td>❌ No</td><td>✅ One response</td><td>✅ Result + ongoing feedback</td></tr>
+<tr><td><strong>Cancelable?</strong></td><td>❌ No</td><td>❌ No</td><td>✅ Yes</td></tr>
+<tr><td><strong>Use when</strong></td><td>Continuous stream</td><td>Quick one-off operation</td><td>Long task with progress</td></tr>
+<tr><td><strong>Example</strong></td><td>/scan, /cmd_vel</td><td>Clear costmap, get map</td><td>NavigateToPose, Dock</td></tr>
+</table>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════════════════════════════════ 6. PARAMETERS -->
+<section id="s6">
+<div class="sec-title">⚙ 6. Parameters</div>
+
+<div class="card-row">
+<div class="card">
+<h3>Declare and use parameters</h3>
+<pre><span class="kw">class</span> <span class="fn">MyNode</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'my_node'</span>)
+
+        <span class="cm"># Declare with default value</span>
+        self.declare_parameter(<span class="st">'speed'</span>, <span class="nu">0.2</span>)
+        self.declare_parameter(<span class="st">'robot_name'</span>, <span class="st">'tb4'</span>)
+
+        <span class="cm"># Read parameter</span>
+        speed = self.get_parameter(<span class="st">'speed'</span>).value
+        name  = self.get_parameter(<span class="st">'robot_name'</span>).value
+
+        self.get_logger().info(<span class="st">f'{name} speed: {speed}'</span>)</pre>
+</div>
+<div class="card">
+<h3>Parameter CLI</h3>
+<div class="term" style="height:100%"><code>
+<span class="comment"># List all params of a node</span><br>
+ros2 param list /my_node<br><br>
+<span class="comment"># Get a param value</span><br>
+ros2 param get /my_node speed<br><br>
+<span class="comment"># Set a param at runtime</span><br>
+ros2 param set /my_node speed 0.5<br><br>
+<span class="comment"># Nav2 — tune goal tolerance (used in TB4)</span><br>
+ros2 param set /controller_server \<br>
+  general_goal_checker.xy_goal_tolerance 0.07<br><br>
+<span class="comment"># Dump all params to YAML</span><br>
+ros2 param dump /my_node > params.yaml
+</code></div>
+</div>
+</div>
+
+<div class="card">
+<h3>Load parameters from YAML</h3>
+<pre><span class="cm"># my_params.yaml</span>
+my_node:
+  ros__parameters:
+    speed: 0.3
+    robot_name: "turtlebot4"</pre>
+<div class="term"><code>ros2 run my_package my_node --ros-args --params-file my_params.yaml</code></div>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════════════════════════════════ 7. LAUNCH FILES -->
+<section id="s7">
+<div class="sec-title">🚀 7. Launch Files</div>
+
+<div class="card">
+<h3>Python launch file (modern ROS 2 style)</h3>
+<pre><span class="kw">from</span> launch <span class="kw">import</span> LaunchDescription
+<span class="kw">from</span> launch_ros.actions <span class="kw">import</span> Node
+<span class="kw">from</span> launch.actions <span class="kw">import</span> DeclareLaunchArgument, IncludeLaunchDescription
+<span class="kw">from</span> launch.substitutions <span class="kw">import</span> LaunchConfiguration
+<span class="kw">from</span> ament_index_python.packages <span class="kw">import</span> get_package_share_directory
+<span class="kw">import</span> os
+
+<span class="kw">def</span> <span class="fn">generate_launch_description</span>():
+    <span class="cm"># Declare argument with default</span>
+    use_sim = DeclareLaunchArgument(
+        <span class="st">'use_sim_time'</span>, default_value=<span class="st">'false'</span>)
+
+    <span class="cm"># Launch a node</span>
+    my_node = Node(
+        package=<span class="st">'my_package'</span>,
+        executable=<span class="st">'my_node'</span>,
+        name=<span class="st">'my_node'</span>,
+        output=<span class="st">'screen'</span>,
+        parameters=[{
+            <span class="st">'use_sim_time'</span>: LaunchConfiguration(<span class="st">'use_sim_time'</span>),
+            <span class="st">'speed'</span>: <span class="nu">0.2</span>,
+        }],
+        remappings=[(<span class="st">'/cmd_vel'</span>, <span class="st">'/robot/cmd_vel'</span>)]
+    )
+
+    <span class="cm"># Include another launch file</span>
+    pkg = get_package_share_directory(<span class="st">'nav2_bringup'</span>)
+    nav2 = IncludeLaunchDescription(
+        os.path.join(pkg, <span class="st">'launch'</span>, <span class="st">'navigation_launch.py'</span>))
+
+    <span class="kw">return</span> LaunchDescription([use_sim, my_node, nav2])</pre>
+</div>
+
+<div class="card">
+<h3>Launch CLI</h3>
+<div class="term"><code>
+<span class="comment"># Run a launch file</span><br>
+ros2 launch my_package my_launch.py<br><br>
+<span class="comment"># Pass arguments</span><br>
+ros2 launch my_package my_launch.py use_sim_time:=true<br><br>
+<span class="comment"># See available arguments</span><br>
+ros2 launch my_package my_launch.py --show-args<br><br>
+<span class="comment"># Nav2 full stack (TurtleBot4)</span><br>
+ros2 launch turtlebot4_navigation nav2.launch.py<br><br>
+<span class="comment"># Nav2 with custom params</span><br>
+ros2 launch nav2_bringup navigation_launch.py \<br>
+  params_file:=/path/to/nav2_params.yaml
+</code></div>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════════════════════════════════ 8. TF2 -->
+<section id="s8">
+<div class="sec-title">🌐 8. TF2 — Transform System</div>
+
+<p>TF2 tracks the coordinate frames of every part of the robot (base, sensors, map) and lets you transform points between them. Everything in Nav2 depends on TF2.</p>
+
+<div class="card">
+<h3>Key frames to know</h3>
+<table>
+<tr><th>Frame</th><th>What it represents</th><th>Published by</th></tr>
+<tr><td class="inline">map</td><td>Fixed global map frame. Origin = map (0,0)</td><td>map_server / AMCL</td></tr>
+<tr><td class="inline">odom</td><td>Odometry frame — drifts over time</td><td>Robot base driver</td></tr>
+<tr><td class="inline">base_link</td><td>Robot body centre</td><td>Robot URDF / driver</td></tr>
+<tr><td class="inline">base_footprint</td><td>Robot projected onto floor</td><td>Robot URDF</td></tr>
+<tr><td class="inline">laser_frame</td><td>LIDAR sensor origin</td><td>LIDAR driver</td></tr>
+</table>
+<div class="alert alert-info"><strong>TF Chain</strong>map → odom → base_link → laser_frame. Each arrow is a transform. AMCL provides map→odom. The driver provides odom→base_link.</div>
+</div>
+
+<div class="card-row">
+<div class="card">
+<h3>Broadcast a transform (Python)</h3>
+<pre><span class="kw">from</span> tf2_ros <span class="kw">import</span> TransformBroadcaster
+<span class="kw">from</span> geometry_msgs.msg <span class="kw">import</span> TransformStamped
+
+<span class="kw">class</span> <span class="fn">TFBroadcaster</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'tf_broadcaster'</span>)
+        self.br = TransformBroadcaster(self)
+        self.timer = self.create_timer(<span class="nu">0.1</span>, self.broadcast)
+
+    <span class="kw">def</span> <span class="fn">broadcast</span>(self):
+        t = TransformStamped()
+        t.header.stamp = self.get_clock().now().to_msg()
+        t.header.frame_id = <span class="st">'base_link'</span>   <span class="cm"># parent</span>
+        t.child_frame_id  = <span class="st">'laser_frame'</span> <span class="cm"># child</span>
+        t.transform.translation.x = <span class="nu">0.04</span>
+        t.transform.rotation.w = <span class="nu">1.0</span>      <span class="cm"># no rotation</span>
+        self.br.sendTransform(t)</pre>
+</div>
+<div class="card">
+<h3>Listen to a transform (Python)</h3>
+<pre><span class="kw">from</span> tf2_ros <span class="kw">import</span> Buffer, TransformListener
+
+<span class="kw">class</span> <span class="fn">TFListener</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'tf_listener'</span>)
+        self.tf_buffer = Buffer()
+        self.tf_listener = TransformListener(
+            self.tf_buffer, self)
+
+    <span class="kw">def</span> <span class="fn">get_robot_pose</span>(self):
+        <span class="kw">try</span>:
+            t = self.tf_buffer.lookup_transform(
+                <span class="st">'map'</span>,        <span class="cm"># target frame</span>
+                <span class="st">'base_link'</span>,  <span class="cm"># source frame</span>
+                rclpy.time.Time())
+            x = t.transform.translation.x
+            y = t.transform.translation.y
+            <span class="kw">return</span> x, y
+        <span class="kw">except</span> Exception <span class="kw">as</span> e:
+            self.get_logger().warn(<span class="st">f'TF error: {e}'</span>)</pre>
+</div>
+</div>
+
+<div class="card">
+<h3>TF CLI</h3>
+<div class="term"><code>
+<span class="comment"># Print transform between two frames</span><br>
+ros2 run tf2_ros tf2_echo map base_link<br><br>
+<span class="comment"># View TF tree visually (saves PDF)</span><br>
+ros2 run tf2_tools view_frames<br><br>
+<span class="comment"># Check if transform exists</span><br>
+ros2 run tf2_ros tf2_monitor map base_link
+</code></div>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════════════════════════════════ 9. NAV2 -->
+<section id="s9">
+<div class="sec-title">🗺 9. Nav2 Stack — Full Deep Dive</div>
+
+<div class="card">
+<h3>Nav2 node pipeline — what runs and in what order</h3>
+<table>
+<tr><th>Node</th><th>Role</th><th>Key topic/service</th></tr>
+<tr><td class="inline">map_server</td><td>Serves saved map OccupancyGrid</td><td>/map, /map_server/map (srv)</td></tr>
+<tr><td class="inline">amcl</td><td>Adaptive MCL localisation</td><td>Reads /scan, /map. Publishes /amcl_pose</td></tr>
+<tr><td class="inline">nav2_costmap_2d (global)</td><td>Builds obstacle grid for planning</td><td>Reads /map, /scan</td></tr>
+<tr><td class="inline">nav2_costmap_2d (local)</td><td>Rolling 3×3m obstacle window</td><td>Reads /scan</td></tr>
+<tr><td class="inline">planner_server</td><td>Global path planning (Dijkstra/A*)</td><td>Action: /compute_path_to_pose</td></tr>
+<tr><td class="inline">controller_server</td><td>DWB local trajectory following</td><td>Publishes /cmd_vel</td></tr>
+<tr><td class="inline">behavior_server</td><td>Recovery behaviours (spin, backup)</td><td>Actions: /spin, /backup, /wait</td></tr>
+<tr><td class="inline">bt_navigator</td><td>Orchestrates everything via BT</td><td>Action: /navigate_to_pose</td></tr>
+<tr><td class="inline">lifecycle_manager</td><td>Manages startup/shutdown order</td><td>Service: /lifecycle_manager/manage_nodes</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>AMCL — Localisation</h3>
+<p>AMCL uses particle filters to estimate robot position on the map using LIDAR scan matching. It REQUIRES an initial pose estimate before it works.</p>
+<div class="term"><code>
+<span class="comment"># Set initial pose from terminal</span><br>
+ros2 topic pub /initialpose geometry_msgs/PoseWithCovarianceStamped \<br>
+  "{header: {frame_id: map}, pose: {pose: {position: {x: 0.0, y: 0.0}, orientation: {w: 1.0}}}}" --once<br><br>
+<span class="comment"># Watch AMCL output</span><br>
+ros2 topic echo /amcl_pose<br><br>
+<span class="comment"># Check particle cloud</span><br>
+ros2 topic echo /particle_cloud
+</code></div>
+<div class="alert alert-warn"><strong>Common mistake</strong>If the robot is not moving or navigation fails, first check if initial pose has been set. AMCL without initial pose = completely wrong localisation.</div>
+</div>
+
+<div class="card">
+<h3>Costmap — understanding cost values</h3>
+<pre><span class="cm"># In nav2_params.yaml — costmap section</span>
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      robot_radius: <span class="nu">0.22</span>        <span class="cm"># physical size</span>
+      inflation_radius: <span class="nu">0.55</span>    <span class="cm"># safety buffer</span>
+      cost_scaling_factor: <span class="nu">3.0</span>  <span class="cm"># inflation steepness</span>
+      update_frequency: <span class="nu">5.0</span>     <span class="cm"># Hz</span>
+      width: <span class="nu">3</span>                   <span class="cm"># metres</span>
+      height: <span class="nu">3</span>
+      resolution: <span class="nu">0.05</span>          <span class="cm"># metres per cell</span></pre>
+<table>
+<tr><th>Cost value</th><th>Meaning</th></tr>
+<tr><td>0</td><td>Completely free — robot can go here</td></tr>
+<tr><td>1–252</td><td>Inflation zone — penalty, planner avoids if possible</td></tr>
+<tr><td>253</td><td>Near-lethal — edge of robot footprint</td></tr>
+<tr><td>254</td><td>LETHAL — inside obstacle, never entered</td></tr>
+<tr><td>255</td><td>Unknown space</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>Sending a navigation goal (Python node)</h3>
+<pre><span class="kw">import</span> rclpy, math
+<span class="kw">from</span> rclpy.node <span class="kw">import</span> Node
+<span class="kw">from</span> rclpy.action <span class="kw">import</span> ActionClient
+<span class="kw">from</span> nav2_msgs.action <span class="kw">import</span> NavigateToPose
+
+<span class="kw">class</span> <span class="fn">Navigator</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'navigator'</span>)
+        self.ac = ActionClient(self, NavigateToPose, <span class="st">'/navigate_to_pose'</span>)
+
+    <span class="kw">def</span> <span class="fn">go_to</span>(self, x, y, yaw=<span class="nu">0.0</span>):
+        goal = NavigateToPose.Goal()
+        goal.pose.header.frame_id = <span class="st">'map'</span>
+        goal.pose.header.stamp = self.get_clock().now().to_msg()
+        goal.pose.pose.position.x = x
+        goal.pose.pose.position.y = y
+        goal.pose.pose.orientation.z = math.sin(yaw/<span class="nu">2</span>)
+        goal.pose.pose.orientation.w = math.cos(yaw/<span class="nu">2</span>)
+
+        self.ac.wait_for_server()
+        self.get_logger().info(<span class="st">f'Sending goal: ({x},{y})'</span>)
+        future = self.ac.send_goal_async(goal, self.feedback_cb)
+        future.add_done_callback(self.goal_cb)
+
+    <span class="kw">def</span> <span class="fn">feedback_cb</span>(self, fb):
+        d = fb.feedback.distance_remaining
+        self.get_logger().info(<span class="st">f'Distance left: {d:.2f}m'</span>)
+
+    <span class="kw">def</span> <span class="fn">goal_cb</span>(self, future):
+        gh = future.result()
+        gh.get_result_async().add_done_callback(self.result_cb)
+
+    <span class="kw">def</span> <span class="fn">result_cb</span>(self, future):
+        self.get_logger().info(<span class="st">'GOAL REACHED!'</span>)
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    rclpy.init()
+    nav = Navigator()
+    nav.go_to(<span class="nu">1.5</span>, <span class="nu">-0.5</span>, <span class="nu">1.57</span>)
+    rclpy.spin(nav)</pre>
+</div>
+
+<div class="card">
+<h3>compute_path_to_pose — preview path without moving</h3>
+<pre><span class="kw">from</span> nav2_msgs.action <span class="kw">import</span> ComputePathToPose
+
+<span class="cm"># Use ActionClient with ComputePathToPose</span>
+<span class="cm"># Same as NavigateToPose but robot does NOT move</span>
+<span class="cm"># Returns nav_msgs/Path with all planned poses</span>
+
+self.planner_ac = ActionClient(
+    self, ComputePathToPose, <span class="st">'/compute_path_to_pose'</span>)
+
+goal = ComputePathToPose.Goal()
+goal.goal.header.frame_id = <span class="st">'map'</span>
+goal.goal.pose.position.x = <span class="nu">2.0</span>
+goal.goal.pose.orientation.w = <span class="nu">1.0</span>
+goal.planner_id = <span class="st">'GridBased'</span>  <span class="cm"># your planner plugin name</span>
+
+<span class="cm"># Result contains: result.path (nav_msgs/Path)</span>
+<span class="cm"># path.poses is a list of PoseStamped along the planned route</span></pre>
+<div class="alert alert-tip"><strong>Use case</strong>Call this before sending the real goal to preview and visualise the path — exactly the "advance path preview" capability that was raised against our system.</div>
+</div>
+
+<div class="card">
+<h3>Nav2 lifecycle — startup sequence</h3>
+<div class="term"><code>
+<span class="comment"># Check lifecycle state of a nav2 node</span><br>
+ros2 lifecycle get /amcl<br>
+ros2 lifecycle get /planner_server<br>
+ros2 lifecycle get /controller_server<br><br>
+<span class="comment"># States: unconfigured → inactive → active</span><br>
+<span class="comment"># lifecycle_manager handles this automatically at launch</span><br><br>
+<span class="comment"># If a node is stuck in inactive:</span><br>
+ros2 lifecycle set /planner_server activate<br><br>
+<span class="comment"># Nav2 nodes managed by lifecycle_manager</span><br>
+ros2 service call /lifecycle_manager_navigation/manage_nodes \<br>
+  nav2_msgs/srv/ManageLifecycleNodes "{command: 3}"<br>
+<span class="comment"># 0=startup 1=pause 2=resume 3=reset 4=shutdown</span>
+</code></div>
+</div>
+
+<div class="card">
+<h3>DWB — understanding the critics</h3>
+<table>
+<tr><th>Critic</th><th>What it penalises</th><th>Effect</th></tr>
+<tr><td>BaseObstacle</td><td>Trajectory passing through costmap lethal cells</td><td>Core collision avoidance — infinite cost = rejected</td></tr>
+<tr><td>PathDist</td><td>Lateral distance from global plan</td><td>Keeps robot on the planned route</td></tr>
+<tr><td>GoalDist</td><td>Distance remaining to goal along path</td><td>Prefers trajectories that make progress</td></tr>
+<tr><td>PathAlign</td><td>Heading difference vs global plan direction</td><td>Keeps robot pointing along the route</td></tr>
+<tr><td>RotateToGoal</td><td>Heading error vs goal orientation when close</td><td>Robot turns correctly before stopping</td></tr>
+<tr><td>Oscillation</td><td>Repeated direction reversals</td><td>Prevents spinning back and forth</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>Tuning Nav2 goal tolerance at runtime</h3>
+<div class="term"><code>
+<span class="comment"># Check current tolerance</span><br>
+ros2 param get /controller_server general_goal_checker.xy_goal_tolerance<br><br>
+<span class="comment"># Set tighter tolerance (more precise stop)</span><br>
+ros2 param set /controller_server general_goal_checker.xy_goal_tolerance 0.07<br>
+ros2 param set /controller_server general_goal_checker.yaw_goal_tolerance 0.15<br><br>
+<span class="comment"># Check if controller_server is running</span><br>
+ros2 node list | grep controller
+</code></div>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════════════════════════════════ 10. CLI -->
+<section id="s10">
+<div class="sec-title">💻 10. CLI — All Terminal Commands</div>
+
+<div class="card">
+<h3>colcon — build system</h3>
+<div class="term"><code>
+<span class="comment"># Build all</span><br>
+colcon build<br><br>
+<span class="comment"># Build one package</span><br>
+colcon build --packages-select my_package<br><br>
+<span class="comment"># Build with symlinks (Python — no rebuild needed for code changes)</span><br>
+colcon build --symlink-install<br><br>
+<span class="comment"># Build and see output (don't suppress)</span><br>
+colcon build --event-handlers console_direct+<br><br>
+<span class="comment"># Source after build</span><br>
+source install/setup.bash<br><br>
+<span class="comment"># Clean build (fixes weird errors)</span><br>
+rm -rf build/ install/ log/ &amp;&amp; colcon build
+</code></div>
+</div>
+
+<div class="card">
+<h3>ros2 — complete reference</h3>
+<div class="term"><code>
+<span class="comment">## NODES</span><br>
+ros2 node list<br>
+ros2 node info /node_name<br>
+ros2 run pkg_name node_name<br><br>
+<span class="comment">## TOPICS</span><br>
+ros2 topic list -t<br>
+ros2 topic echo /topic<br>
+ros2 topic hz /topic<br>
+ros2 topic bw /topic<br>
+ros2 topic pub /topic msg_type "{field: value}" --once<br>
+ros2 topic pub /topic msg_type "{field: value}" --rate 10<br>
+ros2 interface show pkg/msg/Type<br><br>
+<span class="comment">## SERVICES</span><br>
+ros2 service list -t<br>
+ros2 service call /srv_name pkg/srv/Type "{request: data}"<br>
+ros2 service type /srv_name<br><br>
+<span class="comment">## ACTIONS</span><br>
+ros2 action list -t<br>
+ros2 action info /action_name<br>
+ros2 action send_goal /action_name pkg/action/Type "{goal: data}"<br><br>
+<span class="comment">## PARAMETERS</span><br>
+ros2 param list /node<br>
+ros2 param get /node param_name<br>
+ros2 param set /node param_name value<br>
+ros2 param dump /node<br>
+ros2 param load /node params.yaml<br><br>
+<span class="comment">## INTERFACE</span><br>
+ros2 interface list<br>
+ros2 interface show geometry_msgs/msg/Twist<br>
+ros2 interface show nav2_msgs/action/NavigateToPose<br><br>
+<span class="comment">## BAG (record &amp; replay)</span><br>
+ros2 bag record -o my_bag /scan /cmd_vel /amcl_pose<br>
+ros2 bag record -a  <span class="comment"># record ALL topics</span><br>
+ros2 bag play my_bag<br>
+ros2 bag info my_bag<br><br>
+<span class="comment">## DOCTOR (check ROS 2 installation)</span><br>
+ros2 doctor<br>
+ros2 doctor --report
+</code></div>
+</div>
+
+<div class="card">
+<h3>rqt — GUI tools</h3>
+<div class="term"><code>
+<span class="comment"># Full rqt GUI</span><br>
+rqt<br><br>
+<span class="comment"># Node + topic graph (most useful for debugging)</span><br>
+rqt_graph<br><br>
+<span class="comment"># Live plot any topic field</span><br>
+rqt_plot /cmd_vel/linear/x<br><br>
+<span class="comment"># View log messages</span><br>
+rqt_console<br><br>
+<span class="comment"># Image viewer (camera topics)</span><br>
+rqt_image_view<br><br>
+<span class="comment"># TF tree viewer</span><br>
+ros2 run tf2_tools view_frames &amp;&amp; evince frames.pdf
+</code></div>
+</div>
+
+<div class="card">
+<h3>RViz2 — visualisation</h3>
+<div class="term"><code>
+<span class="comment"># Open RViz2</span><br>
+rviz2<br><br>
+<span class="comment"># Open with saved config</span><br>
+rviz2 -d my_config.rviz<br><br>
+<span class="comment"># Key displays to add in RViz:</span><br>
+<span class="comment"># - Map (topic: /map)</span><br>
+<span class="comment"># - LaserScan (topic: /scan)</span><br>
+<span class="comment"># - RobotModel</span><br>
+<span class="comment"># - TF</span><br>
+<span class="comment"># - Path (topic: /plan)</span><br>
+<span class="comment"># - PoseWithCovarianceStamped (topic: /amcl_pose)</span><br>
+<span class="comment"># - Odometry (topic: /odom)</span>
+</code></div>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════════════════════════════════ 11. DEBUGGING -->
+<section id="s11">
+<div class="sec-title">🔍 11. Debugging Guide</div>
+
+<div class="card">
+<h3>Systematic debug approach</h3>
+<table>
+<tr><th>Step</th><th>Command</th><th>What to check</th></tr>
+<tr><td>1. Is ROS running?</td><td class="inline">ros2 node list</td><td>Should show all your nodes. Empty = nothing launched</td></tr>
+<tr><td>2. Is topic publishing?</td><td class="inline">ros2 topic hz /topic</td><td>Rate should match expected. 0 Hz = no publisher</td></tr>
+<tr><td>3. Is data correct?</td><td class="inline">ros2 topic echo /topic</td><td>Read actual values. Wrong frame_id is common</td></tr>
+<tr><td>4. Is TF OK?</td><td class="inline">ros2 run tf2_ros tf2_echo map base_link</td><td>Should print transform. Error = TF broken</td></tr>
+<tr><td>5. Is service/action alive?</td><td class="inline">ros2 service list</td><td>Check if your server is running</td></tr>
+<tr><td>6. Node graph</td><td class="inline">rqt_graph</td><td>Are nodes connected? Disconnected = wrong topic name</td></tr>
+<tr><td>7. Log messages</td><td class="inline">rqt_console</td><td>Filter by node, look for WARN/ERROR</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>Nav2 specific debugging</h3>
+<div class="term"><code>
+<span class="comment"># Check all nav2 nodes are active</span><br>
+ros2 lifecycle get /amcl<br>
+ros2 lifecycle get /planner_server<br>
+ros2 lifecycle get /controller_server<br>
+ros2 lifecycle get /bt_navigator<br><br>
+<span class="comment"># Watch the global plan</span><br>
+ros2 topic echo /plan<br><br>
+<span class="comment"># Watch local costmap</span><br>
+ros2 topic echo /local_costmap/costmap<br><br>
+<span class="comment"># See what velocity DWB is commanding</span><br>
+ros2 topic echo /cmd_vel<br><br>
+<span class="comment"># Watch AMCL pose updates</span><br>
+ros2 topic echo /amcl_pose<br><br>
+<span class="comment"># Check if goal was received by bt_navigator</span><br>
+ros2 action info /navigate_to_pose
+</code></div>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════════════════════════════════ 12. ERRORS -->
+<section id="s12">
+<div class="sec-title">🚨 12. Common Errors &amp; Fixes</div>
+
+<div class="card">
+<table>
+<tr><th>Error</th><th>Cause</th><th>Fix</th></tr>
+<tr>
+  <td><span class="badge b-red">ERROR</span> <code>package not found</code></td>
+  <td>Didn't source workspace</td>
+  <td><span class="inline">source install/setup.bash</span></td>
+</tr>
+<tr>
+  <td><span class="badge b-red">ERROR</span> <code>No executable found</code></td>
+  <td>Node not in setup.py entry_points</td>
+  <td>Add to setup.py, rebuild with colcon</td>
+</tr>
+<tr>
+  <td><span class="badge b-red">ERROR</span> <code>ModuleNotFoundError</code></td>
+  <td>Missing import or package not built</td>
+  <td>Check imports, rebuild, re-source</td>
+</tr>
+<tr>
+  <td><span class="badge b-amber">WARN</span> <code>Waiting for service</code> (hangs)</td>
+  <td>Service server not running</td>
+  <td>Check if server node is launched, <span class="inline">ros2 service list</span></td>
+</tr>
+<tr>
+  <td><span class="badge b-red">ERROR</span> Nav2 <code>Goal aborted</code></td>
+  <td>DWB finds no valid trajectory / no path</td>
+  <td>Clear costmaps, check initial pose, verify map</td>
+</tr>
+<tr>
+  <td><span class="badge b-red">ERROR</span> Nav2 <code>Failed to find valid path</code></td>
+  <td>Goal in lethal zone or no route exists</td>
+  <td>Move goal away from walls, clear costmaps</td>
+</tr>
+<tr>
+  <td><span class="badge b-red">ERROR</span> <code>Transform timeout</code></td>
+  <td>TF not being published in time</td>
+  <td>Check TF tree, ensure all drivers running</td>
+</tr>
+<tr>
+  <td><span class="badge b-amber">WARN</span> <code>AMCL not localised</code></td>
+  <td>No initial pose set</td>
+  <td>Publish to /initialpose or use RViz 2D Pose Estimate</td>
+</tr>
+<tr>
+  <td><span class="badge b-red">ERROR</span> <code>Costmap: Received costmap is empty</code></td>
+  <td>/map not being published</td>
+  <td>Check map_server is running, <span class="inline">ros2 topic hz /map</span></td>
+</tr>
+<tr>
+  <td><span class="badge b-red">ERROR</span> <code>colcon build fails</code></td>
+  <td>Old build artifacts / missing deps</td>
+  <td><span class="inline">rm -rf build/ install/ log/</span> then rebuild</td>
+</tr>
+<tr>
+  <td>Robot oscillates / spins in place</td>
+  <td>Oscillation critic too low, goal tolerance too tight</td>
+  <td>Increase oscillation critic weight or loosen tolerance</td></tr>
+<tr>
+  <td>Robot stops before reaching goal</td>
+  <td>xy_goal_tolerance too large</td>
+  <td><span class="inline">ros2 param set /controller_server general_goal_checker.xy_goal_tolerance 0.07</span></td>
+</tr>
+<tr>
+  <td><code>WebSocketClosedError</code> in rosbridge</td>
+  <td>Too many simultaneous service calls</td>
+  <td>Stagger calls with delays, reduce call frequency</td>
+</tr>
+</table>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════════════════════════════════ 13. QUICK REF -->
+<section id="s13">
+<div class="sec-title">⚡ 13. Quick Reference Card</div>
+
+<div class="two">
+<div class="card">
+<h3>Build &amp; Run</h3>
+<div class="term"><code>
+colcon build --packages-select PKG<br>
+source install/setup.bash<br>
+ros2 run PKG NODE<br>
+ros2 launch PKG LAUNCH.py<br>
+ros2 launch PKG LAUNCH.py arg:=val
+</code></div>
+</div>
+<div class="card">
+<h3>Inspect</h3>
+<div class="term"><code>
+ros2 node list<br>
+ros2 topic list -t<br>
+ros2 topic echo /topic<br>
+ros2 topic hz /topic<br>
+ros2 service list -t<br>
+ros2 action list -t<br>
+ros2 param list /node
+</code></div>
+</div>
+<div class="card">
+<h3>Nav2 Quick Checks</h3>
+<div class="term"><code>
+ros2 lifecycle get /amcl<br>
+ros2 lifecycle get /planner_server<br>
+ros2 topic hz /amcl_pose<br>
+ros2 topic hz /plan<br>
+ros2 topic echo /cmd_vel<br>
+ros2 param get /controller_server \<br>
+  general_goal_checker.xy_goal_tolerance
+</code></div>
+</div>
+<div class="card">
+<h3>Fix Nav2 Goal Abort</h3>
+<div class="term"><code>
+<span class="comment"># 1. Clear costmaps</span><br>
+ros2 service call /global_costmap/clear_entirely_global_costmap nav2_msgs/srv/ClearEntireCostmap {}<br>
+ros2 service call /local_costmap/clear_entirely_local_costmap nav2_msgs/srv/ClearEntireCostmap {}<br><br>
+<span class="comment"># 2. Verify initial pose is set</span><br>
+ros2 topic hz /amcl_pose<br><br>
+<span class="comment"># 3. Tighten tolerance</span><br>
+ros2 param set /controller_server general_goal_checker.xy_goal_tolerance 0.07
+</code></div>
+</div>
+</div>
+
+<div class="card">
+<h3>Node template — copy this for every new node</h3>
+<pre><span class="kw">import</span> rclpy
+<span class="kw">from</span> rclpy.node <span class="kw">import</span> Node
+<span class="kw">from</span> std_msgs.msg <span class="kw">import</span> String          <span class="cm"># change as needed</span>
+<span class="kw">from</span> std_srvs.srv <span class="kw">import</span> SetBool          <span class="cm"># change as needed</span>
+
+<span class="kw">class</span> <span class="fn">MyNode</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__(<span class="st">'my_node'</span>)
+
+        <span class="cm"># Parameters</span>
+        self.declare_parameter(<span class="st">'speed'</span>, <span class="nu">0.2</span>)
+        self.speed = self.get_parameter(<span class="st">'speed'</span>).value
+
+        <span class="cm"># Publisher</span>
+        self.pub = self.create_publisher(String, <span class="st">'/output'</span>, <span class="nu">10</span>)
+
+        <span class="cm"># Subscriber</span>
+        self.sub = self.create_subscription(String, <span class="st">'/input'</span>, self.input_cb, <span class="nu">10</span>)
+
+        <span class="cm"># Service server</span>
+        self.srv = self.create_service(SetBool, <span class="st">'~/enable'</span>, self.srv_cb)
+
+        <span class="cm"># Timer</span>
+        self.timer = self.create_timer(<span class="nu">0.5</span>, self.timer_cb)
+
+        self.get_logger().info(<span class="st">'MyNode started'</span>)
+
+    <span class="kw">def</span> <span class="fn">timer_cb</span>(self):
+        msg = String()
+        msg.data = <span class="st">'hello'</span>
+        self.pub.publish(msg)
+
+    <span class="kw">def</span> <span class="fn">input_cb</span>(self, msg):
+        self.get_logger().info(<span class="st">f'Received: {msg.data}'</span>)
+
+    <span class="kw">def</span> <span class="fn">srv_cb</span>(self, req, res):
+        res.success = <span class="kw">True</span>
+        res.message = <span class="st">'OK'</span>
+        <span class="kw">return</span> res
+
+<span class="kw">def</span> <span class="fn">main</span>(args=<span class="kw">None</span>):
+    rclpy.init(args=args)
+    node = MyNode()
+    <span class="kw">try</span>:
+        rclpy.spin(node)
+    <span class="kw">except</span> KeyboardInterrupt:
+        <span class="kw">pass</span>
+    <span class="kw">finally</span>:
+        node.destroy_node()
+        rclpy.shutdown()
+
+<span class="kw">if</span> __name__ == <span class="st">'__main__'</span>:
+    main()</pre>
+</div>
+</section>
+
+<div style="text-align:center;color:var(--muted);font-size:0.78rem;margin-top:2rem;padding-bottom:2rem;">
+  ROS 2 Humble · Nav2 · Written for Om Gajjar · Internship at My Equation — June 2026
+</div>
+
+</div>
+</body>
+</html>
