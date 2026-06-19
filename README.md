@@ -131,8 +131,8 @@ If you'd like to improve an existing resource or add a new one, feel free to:
 
 **Om Gajjar**
 
-- 💼 LinkedIn: **https://www.linkedin.com/in/omgajjar1976
-- 💻 GitHub: **https://github.com/omgajjar1976
+- 💼 LinkedIn: **https://www.linkedin.com/in/omgajjar1976**
+- 💻 GitHub: **https://github.com/omgajjar1976**
   
 I regularly share content related to **Robotics, ROS 2, Automation, Embedded Systems, and Engineering Learning Resources**.
 
